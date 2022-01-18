@@ -25,6 +25,18 @@ class node:
     
     def __repr__(self):
         return f'node({self.id}, "{self.label}", {self.parents}, {self.children})'
+    
+    def copy(self):
+        copyParents = {nodeID:self.parents[nodeID] for nodeID in self.parents}
+        copyChildren = {nodeID:self.children[nodeID] for nodeID in self.children}
+        _copy = node(self.id, self.label, copyParents, copyChildren)
+        return _copy
+    
+    def get_id(self):
+        return self.id
+    
+    def get_label(self):
+        return self.label
 
 
 class open_digraph: # for open directed graph
@@ -47,6 +59,13 @@ class open_digraph: # for open directed graph
 
     def __repr__(self):
         return f'open_digraph({self.inputs}, {self.outputs}, {self.nodes})'
+
+    def copy(self):
+        nodes = []
+        for node in self.nodes.values():
+            nodes.append(node)
+        _copy = open_digraph(self.inputs.copy(), self.outputs.copy(), nodes)
+        return _copy
 
     @classmethod
     def empty(self):

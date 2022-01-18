@@ -19,18 +19,25 @@ class InitTest(unittest.TestCase):
         opd = open_digraph([], [], [])
         self.assertEqual(opd.inputs, [])
         self.assertEqual(opd.outputs, [])
-        self.assertEqual(opd.nodes, [])
+        self.assertEqual(opd.nodes, {})
         self.assertIsInstance(opd, open_digraph)
+    
+    def test_copy(self):
+        opd = open_digraph([0], [1], [node(0, "x", {}, {1:1}), node(1, "y", {0:1}, {})])
+        self.assertIsNot(opd.copy(),opd)
 
-class NodeTest(unittest.testcase):
+class NodeTest(unittest.TestCase):
     def setUp(self):
-        self.n0 = node(0, 'a', [], [1])
+        self.n0 = node(0, 'a', {}, {1:1})
 
     def test_get_id(self):
         self.assertEqual(self.n0.get_id(), 0)
 
     def test_get_label(self):
         self.assertEqual(self.n0.get_label(), 'a')
+    
+    def test_copy(self):
+        self.assertIsNot(self.n0.copy(), self.n0)
 
 if __name__ == '__main__': # the following code is called only when
     unittest.main() # precisely this file is run
