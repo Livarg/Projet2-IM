@@ -11,6 +11,21 @@ class node:
         self.parents = parents
         self.children = children
 
+    def __str__(self):
+        parents = "[ "
+        children = "[ "
+        for parentID in self.parents:
+            parents += f'{parentID}, '
+        parents += "]"
+        for childrenID in self.children:
+            children += f'{childrenID}, '
+        children += "]"
+        res = f"Name : {self.label}; ID = {self.id}; Parents : {parents}; Children : {children}"
+        return res
+    
+    def __repr__(self):
+        return f'node({self.id}, "{self.label}", {self.parents}, {self.children})'
+
 
 class open_digraph: # for open directed graph
     def __init__(self, inputs, outputs, nodes):
@@ -25,16 +40,13 @@ class open_digraph: # for open directed graph
 
     def __str__(self):
         res = ""
-        for nodeID in self.nodes:
-            for childrenID in self.nodes[nodeID].children:
-                res += self.nodes[nodeID].label + "->" + self.nodes[childrenID].label + "\n"
+        for node in self.nodes.values():
+            for childrenID in node.children:
+                res += node.label + "->" + self.nodes[childrenID].label + "\n"
         return res
 
     def __repr__(self):
-        res = "[ "
-        for nodeID in self.nodes:
-            res += f'self.nodes[nodeID].id' + ", "
-        return res + "] \n"
+        return f'open_digraph({self.inputs}, {self.outputs}, {self.nodes})'
 
     @classmethod
     def empty(self):
