@@ -22,3 +22,10 @@ class open_digraph: # for open directed graph
         self.inputs = inputs
         self.outputs = outputs
         self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> dict
+    
+    def __str__(self):
+        res = ""
+        for nodeID in self.nodes:
+            for childrenID in self.nodes[nodeID].children:
+                res += self.nodes[nodeID].label + "->" + self.nodes[childrenID].label + "\n"
+        return res
