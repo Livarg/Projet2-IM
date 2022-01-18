@@ -7,3 +7,4 @@ n2 = node(2, 'z', {0:1,1:1}, {})
 opd = open_digraph([0],[2],[n0,n1,n2])
 
 print(opd)
+repr(opd)

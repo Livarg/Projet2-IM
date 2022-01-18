@@ -16,10 +16,10 @@ class InitTest(unittest.TestCase):
         self.assertIsInstance(n0, node)
 
     def test_init_open_digraph(self):
-        opd = open_digraph([], [], {})
+        opd = open_digraph([], [], [])
         self.assertEqual(opd.inputs, [])
         self.assertEqual(opd.outputs, [])
-        self.assertEqual(opd.nodes, {})
+        self.assertEqual(opd.nodes, [])
         self.assertIsInstance(opd, open_digraph)
 
 class NodeTest(unittest.testcase):
