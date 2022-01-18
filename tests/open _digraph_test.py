@@ -14,6 +14,15 @@ class InitTest(unittest.TestCase):
         self.assertEqual(n0.parents, {})
         self.assertEqual(n0.children, {1:1})
         self.assertIsInstance(n0, node)
-        
-        if __name__ == '__main__': # the following code is called only when
-            unittest.main() # precisely this file is run
+
+    def test_init_open_digraph(self):
+        opd = open_digraph([], [], {})
+        self.assertEqual(opd.inputs, [])
+        self.assertEqual(opd.outputs, [])
+        self.assertEqual(opd.nodes, {})
+        self.assertIsInstance(opd, open_digraph)
+
+if __name__ == '__main__': # the following code is called only when
+    unittest.main() # precisely this file is run
+
+
