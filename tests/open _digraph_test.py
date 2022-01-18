@@ -22,6 +22,16 @@ class InitTest(unittest.TestCase):
         self.assertEqual(opd.nodes, {})
         self.assertIsInstance(opd, open_digraph)
 
+class NodeTest(unittest.testcase):
+    def setUp(self):
+        self.n0 = node(0, 'a', [], [1])
+
+    def test_get_id(self):
+        self.assertEqual(self.n0.get_id(), 0)
+
+    def test_get_label(self):
+        self.assertEqual(self.n0.get_label(), 'a')
+
 if __name__ == '__main__': # the following code is called only when
     unittest.main() # precisely this file is run
 
