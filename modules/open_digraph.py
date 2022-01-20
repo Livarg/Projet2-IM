@@ -1,3 +1,6 @@
+import re
+
+
 class node:
     def __init__(self, identity, label, parents, children):
         '''
@@ -32,11 +35,18 @@ class node:
         _copy = node(self.id, self.label, copyParents, copyChildren)
         return _copy
     
+    #getters
     def get_id(self):
         return self.id
     
     def get_label(self):
         return self.label
+    
+    def get_parents_ids(self):
+        return list(self.parents.keys())
+    
+    def get_children_ids(self):
+        return list(self.children.keys())
 
 
 class open_digraph: # for open directed graph
@@ -69,6 +79,33 @@ class open_digraph: # for open directed graph
 
     @classmethod
     def empty(self):
-        self.inputs = []
-        self.outputs = []
-        self.nodes = []
+        #self.inputs = []
+        #self.outputs = []
+        #self.nodes = []
+        return open_digraph([],[],[])
+    
+    #getters
+    def get_input_ids(self):
+        return self.inputs
+    
+    def get_output_ids(self):
+        return self.outputs
+    
+    def get_id_node_map(self):
+        return self.nodes
+    
+    def get_nodes(self):
+        return list(self.nodes.values())
+    
+    def get_node_ids(self):
+        return list(self.nodes.keys())
+    
+    def get_node_by_id(self, id):
+        return self.nodes[id]
+    
+    def get_nodes_by_ids(self, ids):
+        nodes = []
+        for id in ids:
+            nodes.append(self.nodes[id])
+        return nodes
+    
