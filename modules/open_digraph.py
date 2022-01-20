@@ -50,22 +50,42 @@ class node:
     
     #setters
     def set_id(self, id):
+        '''
+        id: int; the new id of the node
+        '''
         self.id = id
     
     def set_label(self, label):
+        '''
+        label: string; the new label of the node
+        '''
         self.label = label
     
     def set_parent_ids(self, parent_ids):
+        '''
+        parent_ids: int->int dict; the new parents of the node
+        '''
         self.parents = parent_ids
     
     def set_children_ids(self, children_ids):
+        '''
+        children_ids: int->int dict; the new children of the node
+        '''
         self.children = children_ids
     
     def add_child_id(self, child_id, mult):
+        '''
+        child_id: int; the id of the new child of the node
+        mult: int; the multiplicity of the child
+        '''
         if not(child_id in self.children):
             self.children[child_id] = mult
     
     def add_parent_id(self, parent_id, mult):
+        '''
+        parent_id: int; the id of the new parent of the node
+        mult: int; the multiplicity of the parent
+        '''
         if not(parent_id in self.parents):
             self.parents[parent_id] = mult
     
@@ -128,28 +148,48 @@ class open_digraph: # for open directed graph
         return list(self.nodes.keys())
     
     def get_node_by_id(self, id):
-        return self.nodes[id]
+        '''
+        id: int; the id of the wanted node
+        '''
+        if id in self.nodes:
+            return self.nodes[id]
     
     def get_nodes_by_ids(self, ids):
+        '''
+        ids: int list; the ids of the wanted nodes
+        '''
         nodes = []
         for id in ids:
-            nodes.append(self.nodes[id])
+            if id in self.nodes:
+                nodes.append(self.nodes[id])
         return nodes
     
     #setters
     def set_input_ids(self, input_ids):
+        '''
+        input_ids: int list; the ids of the new input nodes
+        '''
         self.inputs = input_ids
     
     def set_output_ids(self, output_ids):
+        '''
+        output_ids: int list; the ids of the new output nodes
+        '''
         self.outputs = output_ids
     
     def add_input_id(self, input_id):
+        '''
+        input_id: int; the id of the new input node
+        '''
         if not(input_id in self.inputs):
             self.inputs.append(input_id)
             return 0
         return 1
     
     def add_output_id(self, output_id):
+        '''
+        output_id: int; the id of the new output node
+        '''
         if not(output_id in self.outputs):
             self.outputs.append(output_id)
             return 0
@@ -160,6 +200,10 @@ class open_digraph: # for open directed graph
         return self.max_id + 1
     
     def add_edge(self, src, tgt):
+        '''
+        src: int; the id of the parent in the new edge
+        tgt: int; the id of the child in the new edge
+        '''
         if not(src in self.nodes) or not(tgt in self.nodes):
             return 1
         src_node = self.get_node_by_id(src)
@@ -178,6 +222,11 @@ class open_digraph: # for open directed graph
         return 0
     
     def add_node(self, label='', parents={}, children={}):
+        '''
+        label: string; the label of the new node
+        parents: int->int dict; maps a parent node's id to its multiplicity
+        children: int->int dict; maps a child node's id to its multiplicity
+        '''
         new_id = self.new_id()
         self.max_id += 1
         new_node = node(new_id, label, {}, {})
