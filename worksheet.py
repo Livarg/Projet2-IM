@@ -70,10 +70,19 @@ def exo9():
     print(inspect.getdoc(node.__init__))
     print(inspect.getsourcefile(node.__init__))
 
-print(opd.new_id())
+#Exercice 10
+#print(opd.new_id())
 
-print(repr(opd))
-opd.add_edge(2, 0)
-print(repr(opd))
-opd.add_edge(2, 0)
-print(repr(opd))
+def Exercice_11_test():
+    print(repr(opd))
+    opd.add_edge(2, 0)
+    print(repr(opd))
+    opd.add_edge(2, 0)
+    print(repr(opd))
+
+def Exercice_12_test():
+    print(repr(opd))
+    opd.add_node('w', {0:2}, {1:1, 2:3})
+    print(repr(opd))
+
+Exercice_12_test()

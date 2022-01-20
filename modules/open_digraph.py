@@ -176,6 +176,21 @@ class open_digraph: # for open directed graph
             tgt_node.parents[src] = 1
         
         return 0
+    
+    def add_node(self, label='', parents={}, children={}):
+        new_id = self.new_id()
+        self.max_id += 1
+        new_node = node(new_id, label, {}, {})
+        self.nodes[new_id] = new_node
+
+        for parent_id in parents:
+            for _ in range(parents[parent_id]):
+                self.add_edge(parent_id, new_id)
+        
+        for children_id in children:
+            for _ in range(children[children_id]):
+                self.add_edge(new_id, children_id)
+            
         
     
 
