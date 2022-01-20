@@ -110,9 +110,6 @@ class open_digraph: # for open directed graph
         #self.outputs = []
         #self.nodes = []
         return open_digraph([],[],[])
-    
-    def new_id(self):
-        return self.max_id + 1
 
     #getters
     def get_input_ids(self):
@@ -149,10 +146,37 @@ class open_digraph: # for open directed graph
     def add_input_id(self, input_id):
         if not(input_id in self.inputs):
             self.inputs.append(input_id)
+            return 0
+        return 1
     
     def add_output_id(self, output_id):
         if not(output_id in self.outputs):
             self.outputs.append(output_id)
+            return 0
+        return 1
+    
+
+    def new_id(self):
+        return self.max_id + 1
+    
+    def add_edge(self, src, tgt):
+        if not(src in self.nodes) or not(tgt in self.nodes):
+            return 1
+        src_node = self.get_node_by_id(src)
+        tgt_node = self.get_node_by_id(tgt)
+
+        if tgt in src_node.children:
+            src_node.children[tgt] += 1
+        else:
+            src_node.children[tgt] = 1
+        
+        if src in tgt_node.parents:
+            tgt_node.parents[src] += 1
+        else:
+            tgt_node.parents[src] = 1
+        
+        return 0
+        
     
 
     

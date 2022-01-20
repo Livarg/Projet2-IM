@@ -72,3 +72,8 @@ def exo9():
 
 print(opd.new_id())
 
+print(repr(opd))
+opd.add_edge(2, 0)
+print(repr(opd))
+opd.add_edge(2, 0)
+print(repr(opd))
