@@ -82,6 +82,10 @@ class open_digraph: # for open directed graph
         self.inputs = inputs
         self.outputs = outputs
         self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> dict
+        self.max_id = 0
+        for node in nodes:
+            if node.get_id() > self.max_id:
+                self.max_id = node.get_id()
 
     def __str__(self):
         res = ""
@@ -107,6 +111,9 @@ class open_digraph: # for open directed graph
         #self.nodes = []
         return open_digraph([],[],[])
     
+    def new_id(self):
+        return self.max_id + 1
+
     #getters
     def get_input_ids(self):
         return self.inputs
@@ -147,5 +154,5 @@ class open_digraph: # for open directed graph
         if not(output_id in self.outputs):
             self.outputs.append(output_id)
     
-    
+
     

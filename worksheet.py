@@ -70,5 +70,5 @@ def exo9():
     print(inspect.getdoc(node.__init__))
     print(inspect.getsourcefile(node.__init__))
 
-exo9()
+print(opd.new_id())
 
