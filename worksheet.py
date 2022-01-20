@@ -1,4 +1,5 @@
 from modules.open_digraph import *
+import inspect
 
 n0 = node(0, 'x', {}, {1:1,2:1})
 n1 = node(1, 'y', {0:1}, {2:1})
@@ -59,4 +60,15 @@ def set_test():
     opd.add_output_id(4)
     print(opd.get_output_ids())
 
-set_test()
+def exo9():
+    print(dir(node))
+    print(dir(open_digraph))
+
+    print()
+
+    print(inspect.getsource(node.__init__))
+    print(inspect.getdoc(node.__init__))
+    print(inspect.getsourcefile(node.__init__))
+
+exo9()
+
