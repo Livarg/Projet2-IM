@@ -47,6 +47,29 @@ class node:
     
     def get_children_ids(self):
         return list(self.children.keys())
+    
+    #setters
+    def set_id(self, id):
+        self.id = id
+    
+    def set_label(self, label):
+        self.label = label
+    
+    def set_parent_ids(self, parent_ids):
+        self.parents = parent_ids
+    
+    def set_children_ids(self, children_ids):
+        self.children = children_ids
+    
+    def add_child_id(self, child_id, mult):
+        if not(child_id in self.children):
+            self.children[child_id] = mult
+    
+    def add_parent_id(self, parent_id, mult):
+        if not(parent_id in self.parents):
+            self.parents[parent_id] = mult
+    
+
 
 
 class open_digraph: # for open directed graph
@@ -108,4 +131,21 @@ class open_digraph: # for open directed graph
         for id in ids:
             nodes.append(self.nodes[id])
         return nodes
+    
+    #setters
+    def set_input_ids(self, input_ids):
+        self.inputs = input_ids
+    
+    def set_output_ids(self, output_ids):
+        self.outputs = output_ids
+    
+    def add_input_id(self, input_id):
+        if not(input_id in self.inputs):
+            self.inputs.append(input_id)
+    
+    def add_output_id(self, output_id):
+        if not(output_id in self.outputs):
+            self.outputs.append(output_id)
+    
+    
     
