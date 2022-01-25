@@ -1,3 +1,4 @@
+from doctest import FAIL_FAST
 from logging import raiseExceptions
 import re
 
@@ -286,7 +287,7 @@ class open_digraph: # for open directed graph
         for children in self.nodes[node_id].children:
             self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
 
-    def remove_node_by_ids(self, nodes_id):
+    def remove_nodes_by_id(self, nodes_id):
         for id in nodes_id:
             self.remove_node_by_id(id)
 
@@ -300,8 +301,39 @@ class open_digraph: # for open directed graph
             if isinstance(arg, (list,tuple)):
                 self.remove_parallel_edge(arg[0],arg[1])
     
-
-    
+    def is_well_formed(self):
+        for input_id in self.inputs:
+            # TEST 1
+            if not(input_id in self.nodes):
+                return False
+            # TEST 2
+            if len( self.nodes[input_id].get_parents_ids() ) != 0 or len( self.nodes[input_id].get_children_ids() ) != 1:
+                return False
+            if self.nodes[input_id].get_children_ids()[0] != 1:
+                return False
+        
+        for output_id in self.outputs:
+            # TEST 1
+            if not(output_id in self.nodes):
+                return False
+            # TEST 3
+            if len( self.nodes[output_id].get_parents_ids() ) != 1 or len( self.nodes[output_id].get_children_ids() ) != 0:
+                return False
+            if self.nodes[output_id].get_parents_ids()[0] != 1:
+                return False
+        
+        for node_id in self.nodes:
+            # TEST 4
+            if self.nodes[node_id].get_id() != node_id:
+                return False
+            
+            # TEST 5
+            for parent_id in self.nodes[node_id].get_parents_ids():
+                if self.nodes[node_id].parents[parent_id] != self.nodes[parent_id].children[node_id]:
+                    return False
+            for children_id in self.nodes[node_id].get_children_ids():
+                if self.nodes[node_id].children[children_id] != self.nodes[children_id].parent[node_id]:
+                    return False
         
 
     
