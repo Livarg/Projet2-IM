@@ -92,7 +92,7 @@ class node:
 
     def remove_parent_once(self, parent_id):
         if not(parent_id in self.parents):
-            raiseExceptions("Le parents n'existe pas")
+            raise ValueError("Le parents n'existe pas!")
         else :
             self.parents[parent_id] -= 1
         if (self.parents[parent_id] == 0):
@@ -100,13 +100,13 @@ class node:
 
     def remove_parent_id(self, parent_id):
         if not(parent_id in self.parents):
-            raiseExceptions("Le parents n'existe pas")
+            raise ValueError("Le parents n'existe pas!")
         else:
             self.parents.pop(parent_id)
 
     def remove_child_once(self, child_id):
         if not(child_id in self.children):
-            raiseExceptions("Le children n'existe pas")
+            raise ValueError("Le children n'existe pas!")
         else :
             self.children[child_id] -= 1
         if (self.children[child_id] == 0):
@@ -114,7 +114,7 @@ class node:
 
     def remove_child_id(self, child_id):
         if not(child_id in self.children):
-            raiseExceptions("Le children n'existe pas")
+            raise ValueError("Le children n'existe pas!")
         else :
             self.children.pop(child_id)
 
@@ -273,11 +273,35 @@ class open_digraph: # for open directed graph
                 self.add_edge(new_id, children_id)
             
     def remove_edge(self, src, tgt):
-        self.nodes[src].remove_child_once(self,tgt)
-        self.nodes[tgt].remove_parent_once(self,src)
+        self.nodes[src].remove_child_once(tgt)
+        self.nodes[tgt].remove_parent_once(src)
 
     def remove_parallel_edge(self, src, tgt):
-        self.nodes[src].remove_child_id(self,tgt)
-        self.nodes[tgt].remove_child_id(self,src)
+        self.nodes[src].remove_child_id(tgt)
+        self.nodes[tgt].remove_child_id(src)
+
+    def remove_node_by_id(self, node_id):
+        for parent in self.nodes[node_id].parents:
+            self.nodes[node_id].remove_parallel_edges(node_id, parent.get_id())
+        for children in self.nodes[node_id].children:
+            self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
+
+    def remove_node_by_ids(self, nodes_id):
+        for id in nodes_id:
+            self.remove_node_by_id(id)
+
+    def remove_edges(self, *args):
+        for arg in args:
+            if isinstance(arg, (list,tuple)):
+                self.remove_edge(arg[0],arg[1])
+
+    def remove_parallel_edges(self, *args):
+        for arg in args:
+            if isinstance(arg, (list,tuple)):
+                self.remove_parallel_edge(arg[0],arg[1])
+    
+
+    
+        
 
     
