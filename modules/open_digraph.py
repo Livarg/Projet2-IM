@@ -1,3 +1,4 @@
+from logging import raiseExceptions
 import re
 
 
@@ -88,6 +89,37 @@ class node:
         '''
         if not(parent_id in self.parents):
             self.parents[parent_id] = mult
+
+    def remove_parent_once(self, parent_id):
+        if not(parent_id in self.parents):
+            raiseExceptions("Le parents n'existe pas")
+        else :
+            self.parents[parent_id] -= 1
+        if (self.parents[parent_id] == 0):
+            self.parents.pop(parent_id)
+
+    def remove_parent_id(self, parent_id):
+        if not(parent_id in self.parents):
+            raiseExceptions("Le parents n'existe pas")
+        else:
+            self.parents.pop(parent_id)
+
+    def remove_child_once(self, child_id):
+        if not(child_id in self.children):
+            raiseExceptions("Le children n'existe pas")
+        else :
+            self.children[child_id] -= 1
+        if (self.children[child_id] == 0):
+            self.children.pop(child_id)
+
+    def remove_child_id(self, child_id):
+        if not(child_id in self.children):
+            raiseExceptions("Le children n'existe pas")
+        else :
+            self.children.pop(child_id)
+
+        
+
     
 
 
