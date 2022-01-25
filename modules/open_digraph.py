@@ -309,7 +309,7 @@ class open_digraph: # for open directed graph
             # TEST 2
             if len( self.nodes[input_id].get_parents_ids() ) != 0 or len( self.nodes[input_id].get_children_ids() ) != 1:
                 return False
-            if self.nodes[input_id].get_children_ids()[0] != 1:
+            if list(self.nodes[input_id].children.values())[0] != 1:
                 return False
         
         for output_id in self.outputs:
@@ -319,7 +319,7 @@ class open_digraph: # for open directed graph
             # TEST 3
             if len( self.nodes[output_id].get_parents_ids() ) != 1 or len( self.nodes[output_id].get_children_ids() ) != 0:
                 return False
-            if self.nodes[output_id].get_parents_ids()[0] != 1:
+            if list(self.nodes[output_id].parents.values())[0] != 1:
                 return False
         
         for node_id in self.nodes:
@@ -332,8 +332,9 @@ class open_digraph: # for open directed graph
                 if self.nodes[node_id].parents[parent_id] != self.nodes[parent_id].children[node_id]:
                     return False
             for children_id in self.nodes[node_id].get_children_ids():
-                if self.nodes[node_id].children[children_id] != self.nodes[children_id].parent[node_id]:
+                if self.nodes[node_id].children[children_id] != self.nodes[children_id].parents[node_id]:
                     return False
+        return True
     
     def add_input_node(self, id):
         if id in self.get_input_ids():

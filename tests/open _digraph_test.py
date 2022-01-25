@@ -38,6 +38,27 @@ class NodeTest(unittest.TestCase):
     
     def test_copy(self):
         self.assertIsNot(self.n0.copy(), self.n0)
+    
+    # TP 2 Exrecice 5
+    def test_is_well_formed(self):
+        
+        n0 = node(0, 'x', {}, {1:1,2:1})
+        n1 = node(1, 'y', {0:1}, {2:1})
+        n2 = node(2, 'z', {0:1,1:1}, {})
+        opd = open_digraph([0],[2],[n0,n1,n2])
+        self.assertFalse(opd.is_well_formed())
+
+        n0 = node(0, 'a', {3:1, 4:1}, {1:1, 2:1})
+        n1 = node(1, 'b', {0:1}, {2:2, 5:1})
+        n2 = node(2, 'c', {0:1, 1:2}, {6:1})
+        i0 = node(3, 'i0', {}, {0:1})
+        i1 = node(4, 'i1', {}, {0:1})
+        o0 = node(5, 'o0', {1:1}, {})
+        o1 = node(6, 'o1', {2:1}, {})
+        G = open_digraph([3,4], [5,6], [n0,n1,n2,i0,i1,o0,o1])
+        self.assert_(G.is_well_formed())
+
+
 
 if __name__ == '__main__': # the following code is called only when
     unittest.main() # precisely this file is run
