@@ -272,7 +272,12 @@ class open_digraph: # for open directed graph
             for _ in range(children[children_id]):
                 self.add_edge(new_id, children_id)
             
-        
-    
+    def remove_edge(self, src, tgt):
+        self.nodes[src].remove_child_once(self,tgt)
+        self.nodes[tgt].remove_parent_once(self,src)
+
+    def remove_parallel_edge(self, src, tgt):
+        self.nodes[src].remove_child_id(self,tgt)
+        self.nodes[tgt].remove_child_id(self,src)
 
     
