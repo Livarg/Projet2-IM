@@ -334,6 +334,17 @@ class open_digraph: # for open directed graph
             for children_id in self.nodes[node_id].get_children_ids():
                 if self.nodes[node_id].children[children_id] != self.nodes[children_id].parent[node_id]:
                     return False
-        
+    
+    def add_input_node(self, id):
+        if id in self.get_input_ids():
+            raise ValueError("Input node can't point to another input node")
+        self.add_node('', {}, {id:1})
+        self.inputs.append(id)
+    
+    def add_output_node(self, id):
+        if id in self.get_output_ids:
+            raise ValueError("Output node can't point to another output node")
+        self.add_node('', {id:1}, {})
+        self.outputs.append(id)
 
     
