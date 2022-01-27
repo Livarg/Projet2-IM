@@ -276,34 +276,32 @@ class open_digraph: # for open directed graph
     def remove_edge(self, src, tgt):
         self.nodes[src].remove_child_once(tgt)
         self.nodes[tgt].remove_parent_once(src)
-        if src in self.inputs:
-            self.inputs.remove(src)
-            self.nodes.pop(src)
-        if tgt in self.outputs:
-            self.outputs.remove(tgt)
-            self.nodes.pop(tgt)
 
     def remove_parallel_edge(self, src, tgt):
         self.nodes[src].remove_child_id(tgt)
         self.nodes[tgt].remove_parent_id(src)
-        if src in self.inputs:
-            self.inputs.remove(src)
-            self.nodes.pop(src)
-        if tgt in self.outputs:
-            self.outputs.remove(tgt)
-            self.nodes.pop(tgt)
 
     def remove_node_by_id(self, node_id):
-        for parent in self.nodes[node_id].parents:
-            self.nodes[node_id].remove_parallel_edges(parent.get_id(), node_id)
-        for children in self.nodes[node_id].children:
-            self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
+        parents = self.nodes[node_id].get_parents_ids()
+        for parent in parents:
+            self.remove_parallel_edge(parent, node_id)
+            if parent in self.inputs:
+                self.inputs.remove(parent)
+                self.nodes.pop(parent)
+        
+        children = self.nodes[node_id].get_children_ids()
+        for child in children:
+            print(child)
+            self.remove_parallel_edge(node_id, child)
+            if child in self.outputs:
+                self.outputs.remove(child)
+                self.nodes.pop(child)
+        
         if node_id in self.inputs:
             self.inputs.remove(node_id)
-            self.nodes.pop(node_id)
         if node_id in self.outputs:
             self.outputs.remove(node_id)
-            self.nodes.pop(node_id)
+        self.nodes.pop(node_id)
 
     def remove_nodes_by_id(self, nodes_id):
         for id in nodes_id:
@@ -357,13 +355,15 @@ class open_digraph: # for open directed graph
     def add_input_node(self, id):
         if id in self.get_input_ids():
             raise ValueError("Input node can't point to another input node")
+        new_id = self.new_id()
         self.add_node('', {}, {id:1})
-        self.inputs.append(id)
+        self.inputs.append(new_id)
     
     def add_output_node(self, id):
-        if id in self.get_output_ids:
+        if id in self.get_output_ids():
             raise ValueError("Output node can't point to another output node")
+        new_id = self.new_id()
         self.add_node('', {id:1}, {})
-        self.outputs.append(id)
+        self.outputs.append(new_id)
 
     

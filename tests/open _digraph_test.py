@@ -41,12 +41,12 @@ class NodeTest(unittest.TestCase):
     
     # TP 2 Exrecice 5
     def test_is_well_formed(self):
-        
+        # TEST 1
         n0 = node(0, 'x', {}, {1:1,2:1})
         n1 = node(1, 'y', {0:1}, {2:1})
         n2 = node(2, 'z', {0:1,1:1}, {})
         opd = open_digraph([0],[2],[n0,n1,n2])
-        self.assertFalse(opd.is_well_formed())
+        #self.assertFalse(opd.is_well_formed())
 
         n0 = node(0, 'a', {3:1, 4:1}, {1:1, 2:1})
         n1 = node(1, 'b', {0:1}, {2:2, 5:1})
@@ -56,7 +56,33 @@ class NodeTest(unittest.TestCase):
         o0 = node(5, 'o0', {1:1}, {})
         o1 = node(6, 'o1', {2:1}, {})
         G = open_digraph([3,4], [5,6], [n0,n1,n2,i0,i1,o0,o1])
-        self.assert_(G.is_well_formed())
+        self.assertTrue(G.is_well_formed())
+
+        # TEST 2
+        G.remove_node_by_id(0)
+        self.assertTrue(G.is_well_formed())
+        G.remove_node_by_id(6)
+        self.assertTrue(G.is_well_formed())
+
+        G.add_node(n0.get_label(), {1:1}, {2:2})
+        self.assertTrue(G.is_well_formed())
+
+        # TEST 3
+        G.remove_edge(n1.get_id(), 7)
+        self.assertTrue(G.is_well_formed())
+        G.add_edge(n0.get_id(), n1.get_id())
+        self.assertTrue(G.is_well_formed())
+
+        # TEST 4
+        print(repr(G))
+        G.add_input_node(1)
+        print(repr(G))
+        self.assertTrue(G.is_well_formed())
+        G.add_output_node(1)
+        self.assertTrue(G.is_well_formed())
+
+
+
 
 
 
