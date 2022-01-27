@@ -278,16 +278,20 @@ class open_digraph: # for open directed graph
         self.nodes[tgt].remove_parent_once(src)
         if src in self.inputs:
             self.inputs.remove(src)
+            self.nodes.pop(src)
         if tgt in self.outputs:
             self.outputs.remove(tgt)
+            self.nodes.pop(tgt)
 
     def remove_parallel_edge(self, src, tgt):
         self.nodes[src].remove_child_id(tgt)
         self.nodes[tgt].remove_parent_id(src)
         if src in self.inputs:
             self.inputs.remove(src)
+            self.nodes.pop(src)
         if tgt in self.outputs:
             self.outputs.remove(tgt)
+            self.nodes.pop(tgt)
 
     def remove_node_by_id(self, node_id):
         for parent in self.nodes[node_id].parents:
@@ -296,8 +300,10 @@ class open_digraph: # for open directed graph
             self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
         if node_id in self.inputs:
             self.inputs.remove(node_id)
+            self.nodes.pop(node_id)
         if node_id in self.outputs:
             self.outputs.remove(node_id)
+            self.nodes.pop(node_id)
 
     def remove_nodes_by_id(self, nodes_id):
         for id in nodes_id:
