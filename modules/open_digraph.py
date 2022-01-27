@@ -144,7 +144,7 @@ class open_digraph: # for open directed graph
         res = ""
         for node in self.nodes.values():
             for childrenID in node.children:
-                res += node.label + "->" + self.nodes[childrenID].label + "\n"
+                res += node.label + "-" + str(node.children[childrenID]) + ">" + self.nodes[childrenID].label + "\n"
         return res
 
     def __repr__(self):
@@ -276,16 +276,28 @@ class open_digraph: # for open directed graph
     def remove_edge(self, src, tgt):
         self.nodes[src].remove_child_once(tgt)
         self.nodes[tgt].remove_parent_once(src)
+        if src in self.inputs:
+            self.inputs.remove(src)
+        if tgt in self.outputs:
+            self.outputs.remove(tgt)
 
     def remove_parallel_edge(self, src, tgt):
         self.nodes[src].remove_child_id(tgt)
-        self.nodes[tgt].remove_child_id(src)
+        self.nodes[tgt].remove_parent_id(src)
+        if src in self.inputs:
+            self.inputs.remove(src)
+        if tgt in self.outputs:
+            self.outputs.remove(tgt)
 
     def remove_node_by_id(self, node_id):
         for parent in self.nodes[node_id].parents:
-            self.nodes[node_id].remove_parallel_edges(node_id, parent.get_id())
+            self.nodes[node_id].remove_parallel_edges(parent.get_id(), node_id)
         for children in self.nodes[node_id].children:
             self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
+        if node_id in self.inputs:
+            self.inputs.remove(node_id)
+        if node_id in self.outputs:
+            self.outputs.remove(node_id)
 
     def remove_nodes_by_id(self, nodes_id):
         for id in nodes_id:
