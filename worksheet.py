@@ -84,5 +84,6 @@ def Exercice_12_test():
     print(repr(opd))
     opd.add_node('w', {0:2}, {1:1, 2:3})
     print(repr(opd))
+    print(opd)
 
 Exercice_12_test()

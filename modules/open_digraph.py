@@ -1,3 +1,4 @@
+from doctest import FAIL_FAST
 from logging import raiseExceptions
 import re
 
@@ -143,7 +144,7 @@ class open_digraph: # for open directed graph
         res = ""
         for node in self.nodes.values():
             for childrenID in node.children:
-                res += node.label + "->" + self.nodes[childrenID].label + "\n"
+                res += node.label + "-" + str(node.children[childrenID]) + ">" + self.nodes[childrenID].label + "\n"
         return res
 
     def __repr__(self):
@@ -278,15 +279,31 @@ class open_digraph: # for open directed graph
 
     def remove_parallel_edge(self, src, tgt):
         self.nodes[src].remove_child_id(tgt)
-        self.nodes[tgt].remove_child_id(src)
+        self.nodes[tgt].remove_parent_id(src)
 
     def remove_node_by_id(self, node_id):
-        for parent in self.nodes[node_id].parents:
-            self.nodes[node_id].remove_parallel_edges(node_id, parent.get_id())
-        for children in self.nodes[node_id].children:
-            self.nodes[node_id].remove_parallel_edges(node_id, children.get_id())
+        parents = self.nodes[node_id].get_parents_ids()
+        for parent in parents:
+            self.remove_parallel_edge(parent, node_id)
+            if parent in self.inputs:
+                self.inputs.remove(parent)
+                self.nodes.pop(parent)
+        
+        children = self.nodes[node_id].get_children_ids()
+        for child in children:
+            print(child)
+            self.remove_parallel_edge(node_id, child)
+            if child in self.outputs:
+                self.outputs.remove(child)
+                self.nodes.pop(child)
+        
+        if node_id in self.inputs:
+            self.inputs.remove(node_id)
+        if node_id in self.outputs:
+            self.outputs.remove(node_id)
+        self.nodes.pop(node_id)
 
-    def remove_node_by_ids(self, nodes_id):
+    def remove_nodes_by_id(self, nodes_id):
         for id in nodes_id:
             self.remove_node_by_id(id)
 
@@ -299,4 +316,54 @@ class open_digraph: # for open directed graph
         for arg in args:
             if isinstance(arg, (list,tuple)):
                 self.remove_parallel_edge(arg[0],arg[1])
+    
+    def is_well_formed(self):
+        for input_id in self.inputs:
+            # TEST 1
+            if not(input_id in self.nodes):
+                return False
+            # TEST 2
+            if len( self.nodes[input_id].get_parents_ids() ) != 0 or len( self.nodes[input_id].get_children_ids() ) != 1:
+                return False
+            if list(self.nodes[input_id].children.values())[0] != 1:
+                return False
+        
+        for output_id in self.outputs:
+            # TEST 1
+            if not(output_id in self.nodes):
+                return False
+            # TEST 3
+            if len( self.nodes[output_id].get_parents_ids() ) != 1 or len( self.nodes[output_id].get_children_ids() ) != 0:
+                return False
+            if list(self.nodes[output_id].parents.values())[0] != 1:
+                return False
+        
+        for node_id in self.nodes:
+            # TEST 4
+            if self.nodes[node_id].get_id() != node_id:
+                return False
+            
+            # TEST 5
+            for parent_id in self.nodes[node_id].get_parents_ids():
+                if self.nodes[node_id].parents[parent_id] != self.nodes[parent_id].children[node_id]:
+                    return False
+            for children_id in self.nodes[node_id].get_children_ids():
+                if self.nodes[node_id].children[children_id] != self.nodes[children_id].parents[node_id]:
+                    return False
+        return True
+    
+    def add_input_node(self, id):
+        if id in self.get_input_ids():
+            raise ValueError("Input node can't point to another input node")
+        new_id = self.new_id()
+        self.add_node('', {}, {id:1})
+        self.inputs.append(new_id)
+    
+    def add_output_node(self, id):
+        if id in self.get_output_ids():
+            raise ValueError("Output node can't point to another output node")
+        new_id = self.new_id()
+        self.add_node('', {id:1}, {})
+        self.outputs.append(new_id)
+
     
