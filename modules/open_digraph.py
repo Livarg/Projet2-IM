@@ -6,6 +6,8 @@ import re
 class node:
     def __init__(self, identity, label, parents, children):
         '''
+        Class node:
+
         identity: int; its unique id in the graph
         label: string;
         parents: int->int dict; maps a parent node's id to its multiplicity
@@ -32,6 +34,9 @@ class node:
         return f'node({self.id}, "{self.label}", {self.parents}, {self.children})'
     
     def copy(self):
+        """
+        Méthode permettant de crée une copie d'une node
+        """
         copyParents = {nodeID:self.parents[nodeID] for nodeID in self.parents}
         copyChildren = {nodeID:self.children[nodeID] for nodeID in self.children}
         _copy = node(self.id, self.label, copyParents, copyChildren)
@@ -92,6 +97,14 @@ class node:
             self.parents[parent_id] = mult
 
     def remove_parent_once(self, parent_id):
+        """
+        Paramètres:
+        parent_id : le numéro d'identification d'une node
+
+        Modification:
+        Vérifie que l'id rentré appartient au node parent de la node actuelle
+        Si oui retire un lien entre les nodes
+        """
         if not(parent_id in self.parents):
             raise ValueError("Le parents n'existe pas!")
         else :
@@ -100,22 +113,46 @@ class node:
             self.parents.pop(parent_id)
 
     def remove_parent_id(self, parent_id):
+        """
+        Paramètres:
+        parent_id : le numéro d'identification d'une node
+
+        Modification:
+        Vérifie que l'id rentré appartient au node parent de la node actuelle
+        Si oui retire tous les liens entre les nodes
+        """
         if not(parent_id in self.parents):
             raise ValueError("Le parents n'existe pas!")
         else:
             self.parents.pop(parent_id)
 
     def remove_child_once(self, child_id):
+        """
+        Paramètres:
+        child_id : le numéro d'identification d'une node
+
+        Modification:
+        Vérifie que l'id rentré appartient au node enfant de la node actuelle
+        Si oui retire un liens entre les nodes
+        """
         if not(child_id in self.children):
-            raise ValueError("Le children n'existe pas!")
+            raise ValueError("L'enfant n'existe pas!")
         else :
             self.children[child_id] -= 1
         if (self.children[child_id] == 0):
             self.children.pop(child_id)
 
     def remove_child_id(self, child_id):
+        """
+        Paramètres:
+        child_id : le numéro d'identification d'une node
+
+        Modification:
+        Vérifie que l'id rentré appartient au node enfant de la node actuelle
+        Si oui retire tous les liens entre les nodes
+        """
         if not(child_id in self.children):
-            raise ValueError("Le children n'existe pas!")
+            raise ValueError("L'enfant n'existe pas!")
         else :
             self.children.pop(child_id)
 
@@ -144,13 +181,16 @@ class open_digraph: # for open directed graph
         res = ""
         for node in self.nodes.values():
             for childrenID in node.children:
-                res += node.label + "-" + str(node.children[childrenID]) + ">" + self.nodes[childrenID].label + "\n"
+                res += node.label + " -" + str(node.children[childrenID]) + "-> " + self.nodes[childrenID].label + "\n"
         return res
 
     def __repr__(self):
         return f'open_digraph({self.inputs}, {self.outputs}, {self.nodes})'
 
     def copy(self):
+        """
+        Méthode permettant de crée une copie d'un graph
+        """
         nodes = []
         for node in self.nodes.values():
             nodes.append(node)
@@ -159,9 +199,6 @@ class open_digraph: # for open directed graph
 
     @classmethod
     def empty(self):
-        #self.inputs = []
-        #self.outputs = []
-        #self.nodes = []
         return open_digraph([],[],[])
 
     #getters
@@ -234,11 +271,15 @@ class open_digraph: # for open directed graph
     
     def add_edge(self, src, tgt):
         '''
+        Paramètre :
         src: int; the id of the parent in the new edge
         tgt: int; the id of the child in the new edge
+
+        Modification :
+        Add a link (arête) between two nodes
         '''
         if not(src in self.nodes) or not(tgt in self.nodes):
-            return 1
+            raise ValueError("Src or Tgt is not in the attribute nodes")
         src_node = self.get_node_by_id(src)
         tgt_node = self.get_node_by_id(tgt)
 
@@ -251,14 +292,16 @@ class open_digraph: # for open directed graph
             tgt_node.parents[src] += 1
         else:
             tgt_node.parents[src] = 1
-        
-        return 0
     
     def add_node(self, label='', parents={}, children={}):
         '''
+        Paramètres :
         label: string; the label of the new node
         parents: int->int dict; maps a parent node's id to its multiplicity
         children: int->int dict; maps a child node's id to its multiplicity
+
+        Modification :
+        
         '''
         new_id = self.new_id()
         self.max_id += 1
