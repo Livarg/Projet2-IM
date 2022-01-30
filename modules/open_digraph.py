@@ -300,8 +300,3 @@ class open_digraph: # for open directed graph
             if isinstance(arg, (list,tuple)):
                 self.remove_parallel_edge(arg[0],arg[1])
     
-
-    
-        
-
-    
