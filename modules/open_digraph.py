@@ -6,12 +6,14 @@ import re
 class node:
     def __init__(self, identity, label, parents, children):
         '''
-        Class node:
+        __________________________
+        Attribut:
 
         identity: int; its unique id in the graph
         label: string;
         parents: int->int dict; maps a parent node's id to its multiplicity
         children: int->int dict; maps a child node's id to its multiplicity
+        __________________________
         '''
         self.id = identity
         self.label = label
@@ -34,9 +36,11 @@ class node:
         return f'node({self.id}, "{self.label}", {self.parents}, {self.children})'
     
     def copy(self):
-        """
-        Méthode permettant de crée une copie d'une node
-        """
+        '''
+        __________________________
+        Methode : Créer une copie d'une node
+        __________________________
+        '''
         copyParents = {nodeID:self.parents[nodeID] for nodeID in self.parents}
         copyChildren = {nodeID:self.children[nodeID] for nodeID in self.children}
         _copy = node(self.id, self.label, copyParents, copyChildren)
@@ -58,53 +62,87 @@ class node:
     #setters
     def set_id(self, id):
         '''
+        __________________________
+        Parametre:
+        
         id: int; the new id of the node
+        __________________________
         '''
         self.id = id
     
     def set_label(self, label):
         '''
+        __________________________
+        Parametre:
+
         label: string; the new label of the node
+        __________________________
         '''
         self.label = label
     
     def set_parent_ids(self, parent_ids):
         '''
+        __________________________
+        Parametre:
+
         parent_ids: int->int dict; the new parents of the node
+        __________________________
         '''
         self.parents = parent_ids
     
     def set_children_ids(self, children_ids):
         '''
+        __________________________
+        Parametre:
+
         children_ids: int->int dict; the new children of the node
+        __________________________
         '''
         self.children = children_ids
     
     def add_child_id(self, child_id, mult):
         '''
+        __________________________
+        Parametre:
+        
         child_id: int; the id of the new child of the node
         mult: int; the multiplicity of the child
+        __________________________
+        Methode:
+
+        __________________________
         '''
         if not(child_id in self.children):
             self.children[child_id] = mult
     
     def add_parent_id(self, parent_id, mult):
         '''
+        __________________________
+        Parametre:
+
         parent_id: int; the id of the new parent of the node
         mult: int; the multiplicity of the parent
+        __________________________
+        Methode:
+
+        __________________________
         '''
         if not(parent_id in self.parents):
             self.parents[parent_id] = mult
 
     def remove_parent_once(self, parent_id):
-        """
-        Paramètres:
-        parent_id : le numéro d'identification d'une node
+        '''
+        __________________________
+        Parametre:
 
-        Modification:
+        parent_id : int; le numéro d'identification d'une node
+        __________________________
+        Methode:
         Vérifie que l'id rentré appartient au node parent de la node actuelle
         Si oui retire un lien entre les nodes
-        """
+        Si non raise une ereure
+        __________________________
+        '''
         if not(parent_id in self.parents):
             raise ValueError("Le parents n'existe pas!")
         else :
@@ -113,28 +151,38 @@ class node:
             self.parents.pop(parent_id)
 
     def remove_parent_id(self, parent_id):
-        """
-        Paramètres:
-        parent_id : le numéro d'identification d'une node
+        '''
+        __________________________
+        Parametre:
 
-        Modification:
+        parent_id : int; le numéro d'identification d'une node
+        __________________________
+        Methode:
+
         Vérifie que l'id rentré appartient au node parent de la node actuelle
         Si oui retire tous les liens entre les nodes
-        """
+        Si non raise une erreure
+        __________________________
+        '''
         if not(parent_id in self.parents):
             raise ValueError("Le parents n'existe pas!")
         else:
             self.parents.pop(parent_id)
 
     def remove_child_once(self, child_id):
-        """
-        Paramètres:
-        child_id : le numéro d'identification d'une node
+        '''
+        __________________________
+        Parametre:
 
-        Modification:
+        child_id : int; le numéro d'identification d'une node
+        __________________________
+        Methode:
+
         Vérifie que l'id rentré appartient au node enfant de la node actuelle
         Si oui retire un liens entre les nodes
-        """
+        Si non raise une erreure (l'enfant n'existe pas)
+        __________________________
+        '''
         if not(child_id in self.children):
             raise ValueError("L'enfant n'existe pas!")
         else :
@@ -143,14 +191,19 @@ class node:
             self.children.pop(child_id)
 
     def remove_child_id(self, child_id):
-        """
-        Paramètres:
-        child_id : le numéro d'identification d'une node
+        '''
+        __________________________
+        Parametre:
 
-        Modification:
+        child_id : int; le numéro d'identification d'une node
+        __________________________
+        Methode:
+
         Vérifie que l'id rentré appartient au node enfant de la node actuelle
-        Si oui retire tous les liens entre les nodes
-        """
+        Si oui retire tous liens entre les nodes
+        Si non raise une erreure (l'enfant n'existe pas)
+        __________________________
+        '''
         if not(child_id in self.children):
             raise ValueError("L'enfant n'existe pas!")
         else :
@@ -165,9 +218,13 @@ class node:
 class open_digraph: # for open directed graph
     def __init__(self, inputs, outputs, nodes):
         '''
+        __________________________
+        Attributs:
+
         inputs: int list; the ids of the input nodes
         outputs: int list; the ids of the output nodes
         nodes: node iter;
+        __________________________
         '''
         self.inputs = inputs
         self.outputs = outputs
@@ -188,9 +245,13 @@ class open_digraph: # for open directed graph
         return f'open_digraph({self.inputs}, {self.outputs}, {self.nodes})'
 
     def copy(self):
-        """
-        Méthode permettant de crée une copie d'un graph
-        """
+        '''
+        __________________________
+        Methode:
+
+        Créer une coupie d'un graphe, la copie et l'original sont bien 2 instances différentes
+        __________________________
+        '''
         nodes = []
         for node in self.nodes.values():
             nodes.append(node)
@@ -202,6 +263,7 @@ class open_digraph: # for open directed graph
         return open_digraph([],[],[])
 
     #getters
+    
     def get_input_ids(self):
         return self.inputs
     
@@ -219,14 +281,22 @@ class open_digraph: # for open directed graph
     
     def get_node_by_id(self, id):
         '''
+        __________________________
+        Parametre:
+
         id: int; the id of the wanted node
+        __________________________
         '''
         if id in self.nodes:
             return self.nodes[id]
     
     def get_nodes_by_ids(self, ids):
         '''
+        __________________________
+        Parametre:
+
         ids: int list; the ids of the wanted nodes
+        __________________________
         '''
         nodes = []
         for id in ids:
@@ -237,46 +307,69 @@ class open_digraph: # for open directed graph
     #setters
     def set_input_ids(self, input_ids):
         '''
+        __________________________
+        Parametre:
+
         input_ids: int list; the ids of the new input nodes
+        __________________________
         '''
         self.inputs = input_ids
     
     def set_output_ids(self, output_ids):
         '''
+        __________________________
+        Parametre:
+
         output_ids: int list; the ids of the new output nodes
+        __________________________
         '''
         self.outputs = output_ids
     
     def add_input_id(self, input_id):
         '''
+        __________________________
+        Parametre:
+
         input_id: int; the id of the new input node
+        __________________________
         '''
         if not(input_id in self.inputs):
-            self.inputs.append(input_id)
-            return 0
-        return 1
+            raise ValueError("input ID is not in registered in inputs nodes")
+        self.inputs.append(input_id)
     
     def add_output_id(self, output_id):
         '''
+        __________________________
+        Parametre:
+
         output_id: int; the id of the new output node
+        __________________________
         '''
         if not(output_id in self.outputs):
-            self.outputs.append(output_id)
-            return 0
-        return 1
+            raise ValueError("output IDis not in registered in outputs nodes ")
+        self.outputs.append(output_id)
     
 
     def new_id(self):
+        '''
+        __________________________
+        return: renvoie une nouvelle ID disponible
+        __________________________
+        '''
         return self.max_id + 1
     
     def add_edge(self, src, tgt):
         '''
-        Paramètre :
+        __________________________
+        Parametre:
+
         src: int; the id of the parent in the new edge
         tgt: int; the id of the child in the new edge
+        __________________________
+        Methode:
 
-        Modification :
         Add a link (arête) between two nodes
+        __________________________
         '''
         if not(src in self.nodes) or not(tgt in self.nodes):
             raise ValueError("Src or Tgt is not in the attribute nodes")
@@ -295,13 +388,17 @@ class open_digraph: # for open directed graph
     
     def add_node(self, label='', parents={}, children={}):
         '''
-        Paramètres :
+        __________________________
+        Parametre:
+
         label: string; the label of the new node
         parents: int->int dict; maps a parent node's id to its multiplicity
         children: int->int dict; maps a child node's id to its multiplicity
+        __________________________
+        Methode:
 
-        Modification :
-        
+        Add a node to the graph
+        __________________________
         '''
         new_id = self.new_id()
         self.max_id += 1
@@ -317,14 +414,49 @@ class open_digraph: # for open directed graph
                 self.add_edge(new_id, children_id)
             
     def remove_edge(self, src, tgt):
+        '''
+        __________________________
+        Parametre:
+
+        src: int; the id of the parent in the new edge
+        tgt: int; the id of the child in the new edge
+        __________________________
+        Methode:
+
+        Remove one link (arete) between two nodes
+        __________________________
+        '''
         self.nodes[src].remove_child_once(tgt)
         self.nodes[tgt].remove_parent_once(src)
 
     def remove_parallel_edge(self, src, tgt):
+        '''
+        __________________________
+        Parametre:
+
+        src: int; the id of the parent in the new edge
+        tgt: int; the id of the child in the new edge
+        __________________________
+        Methode:
+
+        Remove all links (arete) between two nodes
+        __________________________
+        '''
         self.nodes[src].remove_child_id(tgt)
         self.nodes[tgt].remove_parent_id(src)
 
     def remove_node_by_id(self, node_id):
+        '''
+        __________________________
+        Parametre:
+
+        node_id : int; representing the number of identification of a node
+        __________________________
+        Methode:
+
+        Remove all links between a node and it's neighbours
+        __________________________
+        '''
         parents = self.nodes[node_id].get_parents_ids()
         for parent in parents:
             self.remove_parallel_edge(parent, node_id)
@@ -347,20 +479,60 @@ class open_digraph: # for open directed graph
         self.nodes.pop(node_id)
 
     def remove_nodes_by_id(self, nodes_id):
+        '''
+        __________________________
+        Parametre:
+
+        node_id : int; representing the number of identification of a node
+        __________________________
+        Methode:
+
+        Remove all links between the nodes in nodes_id and their neighbours
+        __________________________
+        '''
         for id in nodes_id:
             self.remove_node_by_id(id)
 
     def remove_edges(self, *args):
+        '''
+        __________________________
+        Parametre:
+
+        *args : *tuple; representing the node source and node target
+        __________________________
+        Methode:
+
+        Remove a link between the node source and the node target            
+        __________________________
+        '''
         for arg in args:
             if isinstance(arg, (list,tuple)):
                 self.remove_edge(arg[0],arg[1])
 
     def remove_parallel_edges(self, *args):
+        '''
+        __________________________
+        Parametre:
+
+        *args : *tuple; representing the node source and node target
+        __________________________
+        Methode:
+
+        Remove all links between the node source and the node target            
+        __________________________
+        '''
         for arg in args:
             if isinstance(arg, (list,tuple)):
                 self.remove_parallel_edge(arg[0],arg[1])
     
     def is_well_formed(self):
+        '''
+        __________________________
+        Methode:
+
+        Check if all the propreties of a graph are respected
+        __________________________
+        '''
         for input_id in self.inputs:
             # TEST 1
             if not(input_id in self.nodes):
@@ -396,6 +568,17 @@ class open_digraph: # for open directed graph
         return True
     
     def add_input_node(self, id):
+        '''
+        __________________________
+        Parametre:
+
+        id : int; number of identification of a node
+        __________________________
+        Methode:
+
+        add a new input node if the node isn't pointing another input node
+        __________________________
+        '''
         if id in self.get_input_ids():
             raise ValueError("Input node can't point to another input node")
         new_id = self.new_id()
@@ -403,6 +586,16 @@ class open_digraph: # for open directed graph
         self.inputs.append(new_id)
     
     def add_output_node(self, id):
+        '''
+         Parametre:
+
+        id : int; number of identification of a node
+        __________________________
+        Methode:
+
+        add a new output node if the node isn't pointing another output node
+        __________________________
+        '''
         if id in self.get_output_ids():
             raise ValueError("Output node can't point to another output node")
         new_id = self.new_id()
