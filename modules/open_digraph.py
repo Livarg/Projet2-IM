@@ -1,6 +1,10 @@
 from doctest import FAIL_FAST
 from logging import raiseExceptions
-import re
+import sys
+import os
+root = os.path.normpath(os.path.join(__file__, './../..'))
+sys.path.append(root)
+from modules.matrix import *
 
 
 class node:
@@ -261,6 +265,7 @@ class open_digraph: # for open directed graph
     @classmethod
     def empty(self):
         return open_digraph([],[],[])
+
 
     #getters
     
@@ -601,5 +606,43 @@ class open_digraph: # for open directed graph
         new_id = self.new_id()
         self.add_node('', {id:1}, {})
         self.outputs.append(new_id)
+
+    @classmethod
+    def graph_from_adjacency_matrix(self, matrix):
+        graph = self.empty()
+        for i in range(len(matrix)):
+            graph.add_node()
+        for x in range(len(matrix)):
+            for y in range(len(matrix)):
+                for _ in range(matrix[x][y]):
+                    graph.add_edge(x,y)
+        return graph
+
+    @classmethod
+    def random(self, n, bound, inputs=0, outputs=0, form="free"):
+        '''
+        Doc
+        Bien préciser ici les options possibles pour form !
+        '''
+        matrix = []
+        if form=="free":
+            matrix = random_int_matrix(n,bound, False)
+        elif form=="DAG":
+            matrix = random_triangular_int_matrix(n, bound)
+        elif form=="oriented":
+            matrix = random_oriented_matrix(n, bound)
+        elif form=="loop-free":
+            matrix = random_int_matrix(n, bound)
+        elif form=="undirected":
+            matrix = random_symetric_int_matrix(n, bound, False)
+        elif form=="loop-free undirected":
+            matrix = random_symetric_int_matrix(n, bound)
+
+        graphe = self.graph_from_adjacency_matrix(matrix)
+
+        
+
+
+
 
     
