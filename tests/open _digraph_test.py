@@ -68,11 +68,12 @@ class NodeTest(unittest.TestCase):
         self.assertTrue(G.is_well_formed())
 
         # TEST 3
+        
         G.remove_edge(n1.get_id(), 7)
         self.assertTrue(G.is_well_formed())
-        G.add_edge(n0.get_id(), n1.get_id())
+        G.add_edge(7, n1.get_id())
         self.assertTrue(G.is_well_formed())
-
+        
         # TEST 4
         print(repr(G))
         G.add_input_node(1)

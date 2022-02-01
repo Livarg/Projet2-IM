@@ -238,7 +238,7 @@ class open_digraph: # for open directed graph
         res = ""
         for node in self.nodes.values():
             for childrenID in node.children:
-                res += node.label + " -" + str(node.children[childrenID]) + "-> " + self.nodes[childrenID].label + "\n"
+                res += node.label + " -(" + str(node.children[childrenID]) + ")-> " + self.nodes[childrenID].label + "\n"
         return res
 
     def __repr__(self):
