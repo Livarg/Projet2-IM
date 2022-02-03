@@ -91,4 +91,9 @@ def TP3_ex8_test():
     print(graph)
     print(graph.is_well_formed())
 
-TP3_ex8_test()
+def TP3_ex10_test():
+    graph = open_digraph.random(4, 4, 1, 2)
+    print(repr(graph))
+    print(graph.adjacency_matrix())
+
+TP3_ex10_test()

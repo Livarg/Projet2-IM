@@ -475,7 +475,6 @@ class open_digraph: # for open directed graph
         
         children = self.nodes[node_id].get_children_ids()
         for child in children:
-            print(child)
             self.remove_parallel_edge(node_id, child)
             if child in self.outputs:
                 self.outputs.remove(child)
@@ -487,7 +486,7 @@ class open_digraph: # for open directed graph
             self.outputs.remove(node_id)
         self.nodes.pop(node_id)
 
-    def remove_nodes_by_id(self, nodes_id):
+    def remove_nodes_by_id(self, nodes_id : list):
         '''
         __________________________
         Parametre:
@@ -499,7 +498,8 @@ class open_digraph: # for open directed graph
         Remove all links between the nodes in nodes_id and their neighbours
         __________________________
         '''
-        for id in nodes_id:
+        ids = nodes_id.copy()
+        for id in ids:
             self.remove_node_by_id(id)
 
     def remove_edges(self, *args):
@@ -614,8 +614,6 @@ class open_digraph: # for open directed graph
     @classmethod
     def graph_from_adjacency_matrix(self, matrix):
         graph = self.empty()
-        print(repr(graph))
-        print(graph.new_id())
         for i in range(len(matrix)):
             graph.add_node(str(i))
         for x in range(len(matrix)):
@@ -662,10 +660,8 @@ class open_digraph: # for open directed graph
             matrix = random_symetric_int_matrix(n, bound, False)
         elif form=="loop-free undirected":
             matrix = random_symetric_int_matrix(n, bound)
-
-        print(matrix)
+        
         graphe = self.graph_from_adjacency_matrix(matrix)
-        print(graphe.is_well_formed())
         node_ids = graphe.get_node_ids()
         for _ in range(inputs):
             graphe.add_input_node(choice(node_ids))
@@ -689,7 +685,39 @@ class open_digraph: # for open directed graph
             res[node_ids[i]] = i
         return res
 
+    def adjacency_matrix(self):
+        '''
+        __________________________
+        Method:
+
+        creates and return the adjacency matrix of the graph, ignoring inputs and outputs
+        __________________________
+        '''
+        copy = self.copy()
+
+        input_ids = copy.get_input_ids()
+        output_ids = copy.get_output_ids()
+        copy.remove_nodes_by_id(input_ids)
+        copy.remove_nodes_by_id(output_ids)
+
+        matrix_ids = copy.get_lower_ids()
+        node_ids = copy.get_node_ids()
+        n = len(node_ids)
+
+        matrix = [[0 for _ in range(n)] for _ in range(n)]
+        for parent in range(n):
+            parent_id = matrix_ids[parent]
+            children = copy.get_node_by_id(parent_id).children
+            for child in range(n):
+                child_id = matrix_ids[child]
+                if child_id in children:
+                    matrix[parent][child] = children[child_id]
+                else:
+                    matrix[parent][child] = 0
+        return matrix
         
+
+
 
 
 
