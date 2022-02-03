@@ -47,4 +47,4 @@ def random_triangular_int_matrix(n ,bound, null_diag = True):
 
 
 
-print(random_triangular_int_matrix(4,10,False))
+#print(random_triangular_int_matrix(4,10,False))

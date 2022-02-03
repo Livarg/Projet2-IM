@@ -1,7 +1,11 @@
 from doctest import FAIL_FAST
 from logging import raiseExceptions
+from operator import ne
+from random import choice
 import sys
 import os
+
+from numpy import mat
 root = os.path.normpath(os.path.join(__file__, './../..'))
 sys.path.append(root)
 from modules.matrix import *
@@ -233,7 +237,7 @@ class open_digraph: # for open directed graph
         self.inputs = inputs
         self.outputs = outputs
         self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> dict
-        self.max_id = 0
+        self.max_id = -1
         for node in nodes:
             if node.get_id() > self.max_id:
                 self.max_id = node.get_id()
@@ -587,12 +591,12 @@ class open_digraph: # for open directed graph
         if id in self.get_input_ids():
             raise ValueError("Input node can't point to another input node")
         new_id = self.new_id()
-        self.add_node('', {}, {id:1})
+        self.add_node(str(new_id), {}, {id:1})
         self.inputs.append(new_id)
     
     def add_output_node(self, id):
         '''
-         Parametre:
+        Parametre:
 
         id : int; number of identification of a node
         __________________________
@@ -604,14 +608,16 @@ class open_digraph: # for open directed graph
         if id in self.get_output_ids():
             raise ValueError("Output node can't point to another output node")
         new_id = self.new_id()
-        self.add_node('', {id:1}, {})
+        self.add_node(str(new_id), {id:1}, {})
         self.outputs.append(new_id)
 
     @classmethod
     def graph_from_adjacency_matrix(self, matrix):
         graph = self.empty()
+        print(repr(graph))
+        print(graph.new_id())
         for i in range(len(matrix)):
-            graph.add_node()
+            graph.add_node(str(i))
         for x in range(len(matrix)):
             for y in range(len(matrix)):
                 for _ in range(matrix[x][y]):
@@ -621,8 +627,27 @@ class open_digraph: # for open directed graph
     @classmethod
     def random(self, n, bound, inputs=0, outputs=0, form="free"):
         '''
-        Doc
-        Bien préciser ici les options possibles pour form !
+        Parameters:
+
+        n       : int; number of non input/output nodes
+        bound   : int; max multiplicity number
+        inputs  : int; number of input nodes
+        outputs : int; number of output nodes
+        form    : str; form of the graph :
+                        "free"       : random digraph with no constrains
+                        "DAG"        : Directed Acyclic Graph, random digraph with no cycles
+                        "oriented"   : random digraph with no nodes pointing to each other
+                        "loop-free"  : random digraph with no nodes pointing to themself
+                        "undirected" : random graph with each connections being both ways
+                        "loop-free undirected" : loop-free and undirected random graph
+        __________________________
+        Method:
+
+        creates and return a random digraph with n inner nodes
+        connected to each others with a random multiplicity between 0 and bound,
+        inputs input nodes, outputs output nodes
+        and a specific form if specified
+        __________________________
         '''
         matrix = []
         if form=="free":
@@ -638,7 +663,15 @@ class open_digraph: # for open directed graph
         elif form=="loop-free undirected":
             matrix = random_symetric_int_matrix(n, bound)
 
+        print(matrix)
         graphe = self.graph_from_adjacency_matrix(matrix)
+        print(graphe.is_well_formed())
+        node_ids = graphe.get_node_ids()
+        for _ in range(inputs):
+            graphe.add_input_node(choice(node_ids))
+        for _ in range(outputs):
+            graphe.add_output_node(choice(node_ids))
+        return graphe
 
         
 

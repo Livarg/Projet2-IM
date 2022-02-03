@@ -86,4 +86,9 @@ def Exercice_12_test():
     print(repr(opd))
     print(opd)
 
-Exercice_12_test()
+def TP3_ex8_test():
+    graph = open_digraph.random(4, 8, 8, 4)
+    print(graph)
+    print(graph.is_well_formed())
+
+TP3_ex8_test()
