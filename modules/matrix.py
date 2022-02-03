@@ -1,4 +1,6 @@
+from asyncio.windows_events import NULL
 from random import randint, randrange
+import random
 
 def random_int_list(n, bound):
     res = []
@@ -6,16 +8,13 @@ def random_int_list(n, bound):
         res.append(randrange(0,bound))
     return res
 
-def random_int_matrix(n, bound):
-    res = []
-    for _ in range(n):
-        res.append(random_int_list(n,bound))
-    return res
-
-def random_int_matrix(n, bound, null_diag=True):
+def random_int_matrix(n, bound, null_diag=True, number_generator=(lambda : random.random())):
     res = []
     for i in range(n):
-        res.append(random_int_list(n,bound))
+        line = []
+        for j in range(n):
+            line.append(int(bound*number_generator()))
+        res.append(line)
         if null_diag:
             res[i][i] = 0
     return res
