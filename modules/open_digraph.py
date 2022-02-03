@@ -672,6 +672,22 @@ class open_digraph: # for open directed graph
         for _ in range(outputs):
             graphe.add_output_node(choice(node_ids))
         return graphe
+    
+    def get_lower_ids(self):
+        '''
+        __________________________
+        Method:
+
+        creates and return a dictionnary who couple each node id
+        with a unique number i such that if there is n nodes,
+        0 <= i < n
+        __________________________
+        '''
+        res = {}
+        node_ids = self.get_node_ids()
+        for i in range(len(node_ids)):
+            res[node_ids[i]] = i
+        return res
 
         
 

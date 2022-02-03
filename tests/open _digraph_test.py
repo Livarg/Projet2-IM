@@ -82,6 +82,8 @@ class NodeTest(unittest.TestCase):
         G.add_output_node(1)
         self.assertTrue(G.is_well_formed())
 
+        print(G.get_lower_ids())
+
 
 
 
