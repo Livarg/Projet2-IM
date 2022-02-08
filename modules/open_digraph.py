@@ -715,4 +715,19 @@ class open_digraph: # for open directed graph
                     matrix[parent][child] = 0
         return matrix
         
+    def save_as_dot_file(self, path = os.getcwd(), verbose=False) -> None:
+        file = open(path + "/Open_digraph.dot", "w+")
+        file.writelines("digraph G { \n\n")
+        for node in self.nodes.values() :
+            for ID in node.children :
+                for _ in range(node.children[ID]) : 
+                    file.write("    " + str(node.get_id()) + "->" + str(self.nodes[ID].get_id()) + ";\n")
+            if verbose :
+                file.write("    " + str(node.get_id()) + "[label = " + node.get_label()  + "_" + str(node.get_id())+ "]; \n" )
+            if node.get_id() in self.get_input_ids():
+                file.write("    " + str(node.get_id()) + "[shape = Mdiamond, color = green];\n")
+            if node.get_id() in self.get_output_ids():
+                file.write("    " + str(node.get_id()) + "[shape = Msquare, color = red];\n")
+        file.write("\n}")
+        file.close()
 

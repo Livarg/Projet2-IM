@@ -1,11 +1,21 @@
 from modules.open_digraph import *
 import inspect
 
-n0 = node(0, 'x', {}, {1:1,2:1})
-n1 = node(1, 'y', {0:1}, {2:1})
-n2 = node(2, 'z', {0:1,1:1}, {})
+n0 = node(0, 'a', {3:1, 4:1}, {1:1, 2:1})
+n1 = node(1, 'b', {0:1}, {2:2, 5:1})
+n2 = node(2, 'c', {0:1, 1:2}, {6:1})
+i0 = node(3, 'i0', {}, {0:1})
+i1 = node(4, 'i1', {}, {0:1})
+o0 = node(5, 'o0', {1:1}, {})
+o1 = node(6, 'o1', {2:1}, {})
+G = open_digraph([3,4], [5,6], [n0,n1,n2,i0,i1,o0,o1])
 
-opd = open_digraph([0],[2],[n0,n1,n2])
+n3 = node(0, 'x', {}, {1:1,2:1})
+n4 = node(1, 'y', {0:1}, {2:1})
+n5 = node(2, 'z', {0:1,1:1}, {})
+
+opd = open_digraph([0],[2],[n3,n4,n5])
+G.save_as_dot_file()
 
 def print_test():
     print(n0)
@@ -96,4 +106,3 @@ def TP3_ex10_test():
     print(repr(graph))
     print(graph.adjacency_matrix())
 
-TP3_ex10_test()

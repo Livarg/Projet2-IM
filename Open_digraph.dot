@@ -1,0 +1,16 @@
+digraph G { 
+
+    0->1;
+    0->2;
+    1->2;
+    1->2;
+    1->5;
+    2->6;
+    3->0;
+    3[shape = Mdiamond, color = green];
+    4->0;
+    4[shape = Mdiamond, color = green];
+    5[shape = Msquare, color = red];
+    6[shape = Msquare, color = red];
+
+}
