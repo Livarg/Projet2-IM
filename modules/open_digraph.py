@@ -1,25 +1,25 @@
 from doctest import FAIL_FAST
+from typing import Dict, List, Tuple
 from logging import raiseExceptions
 from random import choice
 import sys
 import os
 
-from numpy import mat
 root = os.path.normpath(os.path.join(__file__, './../..'))
 sys.path.append(root)
 from modules.matrix import *
 
 
 class node:
-    def __init__(self, identity: int, label: str, parents: dict[int, int], children: dict[int, int]) -> None:
+    def __init__(self, identity: int, label: str, parents: Dict[int, int], children: Dict[int, int]) -> None:
         '''
         __________________________
         Attribut:
 
         identity: int; its unique id in the graph
         label: string;
-        parents: int->int dict; maps a parent node's id to its multiplicity
-        children: int->int dict; maps a child node's id to its multiplicity
+        parents: int->int Dict; maps a parent node's id to its multiplicity
+        children: int->int Dict; maps a child node's id to its multiplicity
         __________________________
         '''
         self.id = identity
@@ -60,10 +60,10 @@ class node:
     def get_label(self) -> str:
         return self.label
     
-    def get_parents_ids(self) -> list[int]:
+    def get_parents_ids(self) -> List[int]:
         return list(self.parents.keys())
     
-    def get_children_ids(self) -> list[int]:
+    def get_children_ids(self) -> List[int]:
         return list(self.children.keys())
     
     #setters
@@ -87,22 +87,22 @@ class node:
         '''
         self.label = label
     
-    def set_parent_ids(self, parent_ids: dict[int, int]) -> None:
+    def set_parent_ids(self, parent_ids: Dict[int, int]) -> None:
         '''
         __________________________
         Parametre:
 
-        parent_ids: int->int dict; the new parents of the node
+        parent_ids: int->int Dict; the new parents of the node
         __________________________
         '''
         self.parents = parent_ids
     
-    def set_children_ids(self, children_ids: dict[int, int]) -> None:
+    def set_children_ids(self, children_ids: Dict[int, int]) -> None:
         '''
         __________________________
         Parametre:
 
-        children_ids: int->int dict; the new children of the node
+        children_ids: int->int Dict; the new children of the node
         __________________________
         '''
         self.children = children_ids
@@ -223,7 +223,7 @@ class node:
 
 
 class open_digraph: # for open directed graph
-    def __init__(self, inputs: list[int], outputs: list[int], nodes: list[node]) -> None:
+    def __init__(self, inputs: List[int], outputs: List[int], nodes: List[node]) -> None:
         '''
         __________________________
         Attributs:
@@ -235,7 +235,7 @@ class open_digraph: # for open directed graph
         '''
         self.inputs = inputs
         self.outputs = outputs
-        self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> dict
+        self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> Dict
         self.max_id = -1
         for node in nodes:
             if node.get_id() > self.max_id:
@@ -272,19 +272,19 @@ class open_digraph: # for open directed graph
 
     #getters
     
-    def get_input_ids(self) -> list[int]:
+    def get_input_ids(self) -> List[int]:
         return self.inputs
     
-    def get_output_ids(self) -> list[int]:
+    def get_output_ids(self) -> List[int]:
         return self.outputs
     
-    def get_id_node_map(self) -> dict[int, node]:
+    def get_id_node_map(self) -> Dict[int, node]:
         return self.nodes
     
-    def get_nodes(self) -> list[node]:
+    def get_nodes(self) -> List[node]:
         return list(self.nodes.values())
     
-    def get_node_ids(self) -> list[int]:
+    def get_node_ids(self) -> List[int]:
         return list(self.nodes.keys())
     
     def get_node_by_id(self, id: int) -> node:
@@ -298,7 +298,7 @@ class open_digraph: # for open directed graph
         if id in self.nodes:
             return self.nodes[id]
     
-    def get_nodes_by_ids(self, ids: list[int]) -> list[node]:
+    def get_nodes_by_ids(self, ids: List[int]) -> List[node]:
         '''
         __________________________
         Parametre:
@@ -313,7 +313,7 @@ class open_digraph: # for open directed graph
         return nodes
     
     #setters
-    def set_input_ids(self, input_ids: list[int]) -> None:
+    def set_input_ids(self, input_ids: List[int]) -> None:
         '''
         __________________________
         Parametre:
@@ -323,7 +323,7 @@ class open_digraph: # for open directed graph
         '''
         self.inputs = input_ids
     
-    def set_output_ids(self, output_ids: list[int]) -> None:
+    def set_output_ids(self, output_ids: List[int]) -> None:
         '''
         __________________________
         Parametre:
@@ -394,14 +394,14 @@ class open_digraph: # for open directed graph
         else:
             tgt_node.parents[src] = 1
     
-    def add_node(self, label: str = '', parents: dict[int, int] = {}, children: dict[int, int] = {}) -> None:
+    def add_node(self, label: str = '', parents: Dict[int, int] = {}, children: Dict[int, int] = {}) -> None:
         '''
         __________________________
         Parametre:
 
         label: string; the label of the new node
-        parents: int->int dict; maps a parent node's id to its multiplicity
-        children: int->int dict; maps a child node's id to its multiplicity
+        parents: int->int Dict; maps a parent node's id to its multiplicity
+        children: int->int Dict; maps a child node's id to its multiplicity
         __________________________
         Methode:
 
@@ -485,7 +485,7 @@ class open_digraph: # for open directed graph
             self.outputs.remove(node_id)
         self.nodes.pop(node_id)
 
-    def remove_nodes_by_id(self, nodes_id: list[int]) -> None:
+    def remove_nodes_by_id(self, nodes_id: List[int]) -> None:
         '''
         __________________________
         Parametre:
@@ -501,7 +501,7 @@ class open_digraph: # for open directed graph
         for id in ids:
             self.remove_node_by_id(id)
 
-    def remove_edges(self, *args: list[tuple[int, int]]) -> None:
+    def remove_edges(self, *args: List[Tuple[int, int]]) -> None:
         '''
         __________________________
         Parametre:
@@ -517,7 +517,7 @@ class open_digraph: # for open directed graph
             if isinstance(arg, (list,tuple)):
                 self.remove_edge(arg[0],arg[1])
 
-    def remove_parallel_edges(self, *args: list[tuple[int, int]]) -> None:
+    def remove_parallel_edges(self, *args: List[Tuple[int, int]]) -> None:
         '''
         __________________________
         Parametre:
@@ -611,7 +611,7 @@ class open_digraph: # for open directed graph
         self.outputs.append(new_id)
 
     @classmethod
-    def graph_from_adjacency_matrix(self, matrix: list[list[int]]):
+    def graph_from_adjacency_matrix(self, matrix: List[List[int]]):
         graph = self.empty()
         for i in range(len(matrix)):
             graph.add_node(str(i))
@@ -668,12 +668,12 @@ class open_digraph: # for open directed graph
             graphe.add_output_node(choice(node_ids))
         return graphe
     
-    def get_lower_ids(self) -> dict[int, int]:
+    def get_lower_ids(self) -> Dict[int, int]:
         '''
         __________________________
         Method:
 
-        creates and return a dictionnary who couple each node id
+        creates and return a Dictionnary who couple each node id
         with a unique number i such that if there is n nodes,
         0 <= i < n
         __________________________
@@ -684,7 +684,7 @@ class open_digraph: # for open directed graph
             res[node_ids[i]] = i
         return res
 
-    def adjacency_matrix(self) -> list[list[int]]:
+    def adjacency_matrix(self) -> List[List[int]]:
         '''
         __________________________
         Method:
@@ -716,9 +716,3 @@ class open_digraph: # for open directed graph
         return matrix
         
 
-
-
-
-
-
-    
