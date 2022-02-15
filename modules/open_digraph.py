@@ -215,7 +215,21 @@ class node:
             raise ValueError("L'enfant n'existe pas!")
         else :
             self.children.pop(child_id)
+    
+    def indegree(self) -> int:
+        sum = 0
+        for parent in self.parents.values:
+            sum += parent
+        return sum
 
+    def outdegree(self) -> int:
+        sum = 0
+        for child in self.children.values:
+            sum += child
+        return sum
+
+    def degree(self) -> int:
+        return self.outdegree() + self.indegree()
         
 
     
@@ -731,3 +745,93 @@ class open_digraph: # for open directed graph
         file.write("\n}")
         file.close()
 
+    '''def from_dot_file(file):
+    #J'ai chié ça avec trop de fatigue pour que ce soit clair et j'ai eu la flemme de le tester : 
+    #i.e. c'est sur que ca marche pas deso (mais je peux le reexpliquer si besoin ptdr)
+    
+        File = open(file, "r")
+        file = File.read()
+        node_list = []
+        for line in file:
+            line = line.replace("    ","")
+            i = 0
+            n = ""
+            while line[i] != "-":
+                n += line[i]
+                i+=1
+            n_id = int(n)
+                
+            line = line.replace("->","")
+            i-=1
+            n_child = []
+            while line[i] != ";" : 
+                n_child.append(stoi(line[i]))
+                i+=1
+
+            n_label = n
+            if "label" in line[i+1]:
+                j=0
+                line = line.replace("    ","")
+                line = line.replace("[label= ")
+                line = line.replace("]")
+                while line[j]!=" ":
+                    n_label += line[j]
+
+            n_parent = [] 
+            if len(node_list)>0 :
+                for k in range(len(node_list)) :
+                    for l in range(len(node_list[k])):
+                        if node_list[k][l] == n_id :
+                            n_parent.append(node_list[k][0])
+                
+            node_list.append( node(n_id,n_label,n_parent,n_child) )
+            
+            inputs = []
+            outputs = []
+            #pour la suite on suppose qu'il y a forcement le label (pas trouvé comment faire autrement)
+            for index in range(len(node_list)) :
+                if "o" in node_list[index][1] :
+                    outputs.append(node_list[index][0])
+                    node_list.del(node_list[index])
+                elif "i" in node_list[index][1] : 
+                    inputs.append(node_list[index][0])
+                    node_list.del(node_list[index])
+            return open_digraph(inputs,outputs,node_list)'''
+    
+    def is_cyclic(self) -> bool:
+        copy = self.copy()
+        if len(copy.nodes) == 0:
+            return False
+        for node in copy.nodes.values():
+            if len(node.children) == 0:
+                copy.remove_node_by_id(node.id)
+                return copy.is_cyclic()
+        return True
+
+
+
+
+class bool_circ(open_digraph) :
+    """boolean circles are an extension of open digraphs """
+    def __init__(self, inputs: List[int], outputs: List[int], nodes: List[node]) -> None:
+        super().__init__(inputs, outputs, nodes)
+        if not self.is_well_formed():
+            raise ValueError("ce graph n'est pas un circuit booleen")
+    
+    def __init__(self, graph) -> None:
+        super().__init__(graph.get_inputs_ids,graph.get_output_ids,graph.get_nodes)
+        if not self.is_well_formed():
+            raise ValueError("ce graph n'est pas un circuit booleen")
+ 
+
+    def is_well_formed(self) -> bool :
+        if self.is_cyclic():
+            return False 
+        for node in self.nodes.values() :
+            if node.label == "" and node.indegree() > 1:
+                return False
+            if (node.label == "&" or node.label == "|") and node.outdegree() > 1:
+                return False
+            if node.label == "~" and (node.indegree() > 1 or node.outdegree() > 1):
+                return False
+        return True

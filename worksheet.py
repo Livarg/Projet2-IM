@@ -12,10 +12,11 @@ G = open_digraph([3,4], [5,6], [n0,n1,n2,i0,i1,o0,o1])
 
 n3 = node(0, 'x', {}, {1:1,2:1})
 n4 = node(1, 'y', {0:1}, {2:1})
-n5 = node(2, 'z', {0:1,1:1}, {})
+n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-G.save_as_dot_file()
+opd.save_as_dot_file(verbose=True)
+print(opd.is_cyclic())
 
 def print_test():
     print(n0)
@@ -105,4 +106,3 @@ def TP3_ex10_test():
     graph = open_digraph.random(4, 4, 1, 2)
     print(repr(graph))
     print(graph.adjacency_matrix())
-
