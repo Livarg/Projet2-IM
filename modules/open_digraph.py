@@ -1,9 +1,11 @@
 from doctest import FAIL_FAST
+from multiprocessing.managers import ValueProxy
 from typing import Dict, List, Tuple
 from logging import raiseExceptions
 from random import choice
 import sys
 import os
+from xml.dom.minicompat import NodeList
 
 root = os.path.normpath(os.path.join(__file__, './../..'))
 sys.path.append(root)
@@ -250,10 +252,6 @@ class open_digraph: # for open directed graph
         self.inputs = inputs
         self.outputs = outputs
         self.nodes = {node.id:node for node in nodes} # self.nodes: <int,node> Dict
-        self.max_id = -1
-        for node in nodes:
-            if node.get_id() > self.max_id:
-                self.max_id = node.get_id()
 
     def __str__(self) -> str:
         res = ""
@@ -807,7 +805,85 @@ class open_digraph: # for open directed graph
                 copy.remove_node_by_id(node.id)
                 return copy.is_cyclic()
         return True
+    
+    def min_id(self):
+        if len(self.nodes) == 0:
+            raise ValueError("You are looking for the min of an empty dictionnary")
+        cpt = list(self.nodes.keys())[0]
+        for node_id in self.nodes.keys():
+            if cpt > node_id:
+                cpt = node_id
+        return cpt
+    
+    def max_id(self):
+        if len(self.nodes) == 0:
+            raise ValueError("You are looking for the max of an empty dictionnary")
+        cpt = list(self.nodes.keys())[0]
+        for node_id in self.nodes.keys():
+            if cpt < node_id:
+                cpt = node_id
+        return cpt
+        
+    def shift_indice(self,n):
+        clefs = list(self.nodes.keys())
+        newNodes = {}
+        newInputs = []
+        newOutputs = []
+        for i in clefs:
+            newNodes[i + n] = self.nodes[i]
+        for i in self.inputs:
+            newInputs.append(i + n)
+        for i in self.outputs:
+            newOutputs.append(i + n)
+        self.nodes = newNodes
+        self.inputs = newInputs
+        self.outputs = newOutputs
+        
+        
+    def iparallel(self, g):
+        self.shift_indice(g.max_id() - self.min_id() + 1)
+        self.nodes.update(g.nodes)
+        self.inputs += g.inputs
+        self.outputs += g.outputs
 
+    def parallel(self, g):
+        newGraph = self.copy()
+        newGraph.iparallel(g)
+        return newGraph
+    
+    def icompose(self, g):
+        cpt = len(self.inputs)
+        if cpt != len(g.outputs) :
+            raise ValueError ("You can't merge two digraph, if the inputs of self doesn't match output of g")
+        self.iparallel(g)
+        for indice in range(cpt):
+            self.add_edge(g.outputs[indice], self.inputs[indice])
+        
+    
+    def compose(self, g):
+        newGraph = self.copy()
+        newGraph.icompose(g)
+        return newGraph
+    
+    def connected_components(self):
+        id = 0
+        graphs = {}
+        for nodeId in self.nodes:
+            if not(nodeId in graphs):
+                id += 1
+                graphs[nodeId] = id
+                pile = [nodeId]
+                while len(pile) > 0:
+                    elem = pile.pop()
+                    if not(elem in graphs):
+                        graphs[elem] = id
+                        for parent in self.nodes[elem].parents:
+                            if not(parent in graphs):
+                                pile.append(parent)
+                        for child in self.nodes[elem].children:
+                            if not(child in graphs):
+                                pile.append(child)
+        return id, graphs
 
 
 
