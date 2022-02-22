@@ -830,7 +830,21 @@ class open_digraph: # for open directed graph
         newInputs = []
         newOutputs = []
         for i in clefs:
+            newParents = {}
+            parents = list(self.nodes[i].parents.keys())
+            for parentId in parents:
+                newParents[parentId+n] = self.nodes[i].parents[parentId]
+            self.nodes[i].parents = newParents
+            
+            newChildren = {}
+            children = list(self.nodes[i].children.keys())
+            for childrenId in children:
+                newChildren[childrenId+n] = self.nodes[i].children[childrenId]
+            self.nodes[i].children = newChildren
+                
             newNodes[i + n] = self.nodes[i]
+            
+            self.nodes[i].id += n
         for i in self.inputs:
             newInputs.append(i + n)
         for i in self.outputs:
@@ -871,7 +885,6 @@ class open_digraph: # for open directed graph
         for nodeId in self.nodes:
             if not(nodeId in graphs):
                 id += 1
-                graphs[nodeId] = id
                 pile = [nodeId]
                 while len(pile) > 0:
                     elem = pile.pop()

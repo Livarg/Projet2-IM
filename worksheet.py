@@ -15,8 +15,8 @@ n4 = node(1, 'y', {0:1}, {2:1})
 n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-opd.save_as_dot_file(verbose=True)
-print(opd.is_cyclic())
+#opd.save_as_dot_file(verbose=True)
+#print(opd.is_cyclic())
 
 def print_test():
     print(n0)
@@ -106,3 +106,12 @@ def TP3_ex10_test():
     graph = open_digraph.random(4, 4, 1, 2)
     print(repr(graph))
     print(graph.adjacency_matrix())
+    
+def TP5_exo_all(opd, G):
+    print(G)
+    print(opd.min_id(), " ", opd.max_id())
+    print(G.min_id(), " ", G.max_id())
+    GRAPH = opd.parallel(G)
+    print(GRAPH.connected_components())
+
+TP5_exo_all(opd, G)

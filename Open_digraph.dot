@@ -1,13 +1,22 @@
 digraph G { 
 
+    7->8;
+    7->9;
+    7[shape = Mdiamond, color = green];
+    8->9;
+    9->7;
+    9[shape = Msquare, color = red];
     0->1;
     0->2;
-    0[label = x_0]; 
-    0[shape = Mdiamond, color = green];
     1->2;
-    1[label = y_1]; 
-    2->0;
-    2[label = z_2]; 
-    2[shape = Msquare, color = red];
+    1->2;
+    1->5;
+    2->6;
+    3->0;
+    3[shape = Mdiamond, color = green];
+    4->0;
+    4[shape = Mdiamond, color = green];
+    5[shape = Msquare, color = red];
+    6[shape = Msquare, color = red];
 
 }
