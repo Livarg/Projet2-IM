@@ -880,6 +880,7 @@ class open_digraph: # for open directed graph
         return newGraph
     
     def connected_components(self):
+        
         id = 0
         graphs = {}
         for nodeId in self.nodes:
@@ -898,7 +899,77 @@ class open_digraph: # for open directed graph
                                 pile.append(child)
         return id, graphs
 
+    def dijkstra(self, src : node, tgt : node = None, direction = None):
+        Q = [src]
+        dist = {src : 0}
+        prev = {}
+        while(len(Q) != 0):
+            u = Q.pop(0).get_id()  #Pas besoin de récupérer le min de dist car nos list car Q est déjà sensé etre trié dans l'ordre croissant (création de Q)
+            if(direction == -1):
+                neighbours = self.get_node_by_ids(list(u.get_parents_ids()))
+            elif(direction == 1):
+                neighbours = self.get_node_by_ids(list(u.get_childrens_ids()))
+            else:
+                neighbours = self.get_node_by_ids(list(u.get_parents_ids()) + list(u.get_childrens_ids()))
+            for v in neighbours:
+                if not(v in dist):
+                    Q.append(v)
+                if not(v in dist) or dist[v] > dist[u] + 1:
+                    dist[v] = dist[u] + 1
+                    prev[v] = u
+                if v == tgt:
+                    return dist, prev
+        return dist, prev
+            
+    def shortest_path(self, u : node, v : node, direction = 1):
+        dist, prev = self.dijkstra(u , v, direction)
+        if not(v in dist):
+            raise ValueError("Il n'existe pas de chemin de u à v :(")
+        res = [v]
+        while(v in prev):
+            res.append(prev[v])
+            v = prev[v]
+        return res.reverse()
 
+    def common_ancestor_distances(self, u: node, v : node):
+        ancestor_u = self.get_nodes_by_ids(list(u.get_parents_ids()))
+        ancestor_v = self.get_nodes_by_ids(list(v.get_parents_ids()))
+        
+        for node in ancestor_u:
+            ancestor_u.append(self.get_nodes_by_ids(list(node.get_parents_ids())))
+        for node in ancestor_v:
+            ancestor_v.append(self.get_nodes_by_ids(list(node.get_parents_ids())))
+        
+        ancestor = [node for node in ancestor_u if node in ancestor_v]
+        dist = {}
+        
+        for node in ancestor:
+            dist[node.get_id()] = self.shortest_path(node , u), self.shortest_path(node , v)
+        
+        return dist
+    
+    def tri_topologique(self):
+        res = []
+        copy = self.copy()
+        copy.remove_nodes_by_id(copy.get_input_ids())
+        copy.remove_nodes_by_id(copy.get_output_ids())
+        while (len(copy.get_nodes()) > 0):
+            top = [node.get_id() for node in copy.get_nodes() if len(node.get_parents_ids()) == 0]
+            if(len(top) == 0):
+                raise ValueError("Le graphe est cyclique.")
+            res.append(top)
+            copy.remove_nodes_by_id(top)
+        return res
+    
+    def depth_node(self, u : node):
+        tri = self.tri_topologique()
+        for index, nodes in enumerate(tri):
+            if u.get_id() in nodes:
+                return index
+            
+    def depth(self):
+        return len(self.tri_topologique())
+        
 
 class bool_circ(open_digraph) :
     """boolean circles are an extension of open digraphs """
