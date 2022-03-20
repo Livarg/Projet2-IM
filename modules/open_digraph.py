@@ -969,7 +969,41 @@ class open_digraph: # for open directed graph
             
     def depth(self):
         return len(self.tri_topologique())
+    
+    def longest_path(self, u: node, v: node):
+        tri = self.tri_topologique()
+        k = 0
+        while u.get_id() not in tri[k]:
+            k += 1
         
+        dist = {u : 0}
+        prev = {}
+        while v.get_id() not in tri[k]:
+            for wID in tri[k]:
+                w = self.get_node_by_id(wID)
+                for parentID in w.get_parents_ids():
+                    parent = self.get_node_by_id(parentID)
+                    if parent in dist:
+                        if w not in dist or dist[parent] >= dist[w]:
+                            dist[w] = dist[parent] + 1
+                            prev[w] = parent
+            k += 1
+        for parentID in v.get_parents_ids():
+            parent = self.get_node_by_id(parentID)
+            if parent in dist:
+                if v not in dist or dist[parent] >= dist[w]:
+                    dist[w] = dist[parent] + 1
+                    prev[w] = parent
+        
+        if not(v in dist):
+            raise ValueError("Il n'existe pas de chemin de u à v :(")
+        res = [v]
+        while(v in prev):
+            res.append(prev[v])
+            v = prev[v]
+        return res.reverse(), len(res)
+                            
+
 
 class bool_circ(open_digraph) :
     """boolean circles are an extension of open digraphs """
