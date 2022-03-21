@@ -32,11 +32,29 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
 
     @classmethod
     def empty(self):
+        '''
+        ___________________________
+        Methode:
+        
+        Renvoie un open_digraph vide
+        ___________________________
+        '''
         return open_digraph([],[],[])
     
 
     @classmethod
     def graph_from_adjacency_matrix(self, matrix: List[List[int]]):
+        '''
+        __________________________
+        Parametre:
+
+        matrix : un double tableau d'entier qui possèdes des propriétés similaire a une matrice
+        __________________________
+        Methode:
+
+        Créer un open-digraph a partir d'une matrice
+        __________________________
+        '''
         graph = self.empty()
         for i in range(len(matrix)):
             graph.add_node(str(i))
@@ -49,6 +67,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
     @classmethod
     def random(self, n: int, bound: int, inputs: int = 0, outputs: int = 0, form: str = "free"):
         '''
+        ___________________________
         Parameters:
 
         n       : int; number of non input/output nodes
@@ -63,7 +82,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
                         "undirected" : random graph with each connections being both ways
                         "loop-free undirected" : loop-free and undirected random graph
         __________________________
-        Method:
+        Return:
 
         creates and return a random digraph with n inner nodes
         connected to each others with a random multiplicity between 0 and bound,
@@ -112,7 +131,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
     def adjacency_matrix(self) -> List[List[int]]:
         '''
         __________________________
-        Method:
+        Return:
 
         creates and return the adjacency matrix of the graph, ignoring inputs and outputs
         __________________________
@@ -141,6 +160,17 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return matrix
         
     def save_as_dot_file(self, path = os.getcwd(), verbose=False) -> None:
+        '''
+        __________________________
+        Parametre:
+
+        path : chemin vers le dossier dans le quel on travail
+        __________________________
+        Methode:
+
+        Créer un fichier .dot a partir d'un open_digraph afin de le visualiser facilement
+        __________________________
+        '''
         file = open(path + "/Open_digraph.dot", "w+")
         file.writelines("digraph G { \n\n")
         for node in self.nodes.values() :
@@ -210,6 +240,13 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
             return open_digraph(inputs,outputs,node_list)'''
     
     def is_cyclic(self) -> bool:
+        '''
+        __________________________
+        Return:
+
+        renvoie un boolean qui indique si le graph est cyclique, càd si plusieur node forme une boucle
+        __________________________
+        '''
         copy = self.copy()
         if len(copy.nodes) == 0:
             return False
@@ -220,6 +257,13 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return True
     
     def min_id(self):
+        '''
+        __________________________
+        Methode:
+
+        renvoie le plus petit ID de node dont le graphe est composé
+        __________________________
+        '''
         if len(self.nodes) == 0:
             raise ValueError("You are looking for the min of an empty dictionnary")
         cpt = list(self.nodes.keys())[0]
@@ -229,6 +273,13 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return cpt
     
     def max_id(self):
+        '''
+        __________________________
+        Methode:
+
+        Renvoie le plus grand ID de node dont le graphe est composé
+        __________________________
+        '''
         if len(self.nodes) == 0:
             raise ValueError("You are looking for the max of an empty dictionnary")
         cpt = list(self.nodes.keys())[0]
@@ -238,6 +289,17 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return cpt
         
     def shift_indice(self,n):
+        '''
+        __________________________
+        Parametre:
+
+        int n: un entier
+        __________________________
+        Methode:
+
+        Effectue une auglentation de n à chaque ID des nodes du graphe
+        __________________________
+        '''
         clefs = list(self.nodes.keys())
         newNodes = {}
         newInputs = []
@@ -267,17 +329,50 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         self.outputs = newOutputs     
         
     def iparallel(self, g):
+        '''
+        __________________________
+        Parametre:
+
+        open_digraph g: un second open digraph
+        __________________________
+        Methode:
+
+        Ajoute a notre open_digraph un second g sans que ni l'un ni l'autre n'est de lien directe
+        __________________________
+        '''
         self.shift_indice(g.max_id() - self.min_id() + 1)
         self.nodes.update(g.nodes)
         self.inputs += g.inputs
         self.outputs += g.outputs
 
     def parallel(self, g):
+        '''
+        __________________________
+        Parametre:
+
+        open_digraph g: un second open_digraph
+        __________________________
+        renvoie:
+
+        Créer et renvoie un nouveau open_digraph qui contient deux graphe sans que l'un n'est de lien directe avec l'autre
+        __________________________
+        '''
         newGraph = self.copy()
         newGraph.iparallel(g)
         return newGraph
     
     def icompose(self, g):
+        '''
+        __________________________
+        Parametre:
+
+        open_digraph g: un second open_digraph
+        __________________________
+        Methode:
+
+        Ajoute a notre open_digraph un second g telque les inputs de notre open_digraph sont relié aux output de g
+        __________________________
+        '''
         cpt = len(self.inputs)
         if cpt != len(g.outputs) :
             raise ValueError ("You can't merge two digraph, if the inputs of self doesn't match output of g")
@@ -286,12 +381,22 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
             self.add_edge(g.outputs[indice], self.inputs[indice])
     
     def compose(self, g):
+        '''
+        __________________________
+        Parametre:
+
+        open_digraph g: un second open_digraph
+        __________________________
+        Methode:
+
+        Créer et renvoie un nouveau open_digraph qui contient un graphe telque les inputs de notre open_digraph sont relié aux output de g
+        __________________________
+        '''
         newGraph = self.copy()
         newGraph.icompose(g)
         return newGraph
     
-    def connected_components(self):
-        
+    def connected_components(self):   
         id = 0
         graphs = {}
         for nodeId in self.nodes:
@@ -415,30 +520,3 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
             res.append(prev[v])
             v = prev[v]
         return res.reverse(), len(res)
-                            
-
-
-class bool_circ(open_digraph) :
-    """boolean circles are an extension of open digraphs """
-    def __init__(self, inputs: List[int], outputs: List[int], nodes: List[node]) -> None:
-        super().__init__(inputs, outputs, nodes)
-        if not self.is_well_formed():
-            raise ValueError("ce graph n'est pas un circuit booleen")
-    
-    def __init__(self, graph) -> None:
-        super().__init__(graph.get_inputs_ids,graph.get_output_ids,graph.get_nodes)
-        if not self.is_well_formed():
-            raise ValueError("ce graph n'est pas un circuit booleen")
- 
-
-    def is_well_formed(self) -> bool :
-        if self.is_cyclic():
-            return False 
-        for node in self.nodes.values() :
-            if node.label == "" and node.indegree() > 1:
-                return False
-            if (node.label == "&" or node.label == "|") and node.outdegree() > 1:
-                return False
-            if node.label == "~" and (node.indegree() > 1 or node.outdegree() > 1):
-                return False
-        return True
