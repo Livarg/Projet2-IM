@@ -17,7 +17,7 @@ n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
 circuit = bool_circ.pars_parenthese("((x0)&((x1)&(x2)))|((x1)&(~(x2)))", "((x0)&(~(x1)))|(x2)")
-circuit.save_as_dot_file(verbose=True)
+G.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
 
 def print_test():
@@ -115,5 +115,8 @@ def TP5_exo_all(opd, G):
     print(G.min_id(), " ", G.max_id())
     GRAPH = opd.parallel(G)
     print(GRAPH.connected_components())
+    
+def dijkstra_test(opd, G):
+    print(G.dijkstra(i0,o0)[0])
 
-TP5_exo_all(opd, G)
+dijkstra_test(opd,G)
