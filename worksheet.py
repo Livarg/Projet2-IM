@@ -1,4 +1,5 @@
 from modules.open_digraph import *
+from modules.circuit_boolean import *
 import inspect
 
 n0 = node(0, 'a', {3:1, 4:1}, {1:1, 2:1})
@@ -15,7 +16,8 @@ n4 = node(1, 'y', {0:1}, {2:1})
 n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-#opd.save_as_dot_file(verbose=True)
+circuit = bool_circ.pars_parenthese("((x0)&((x1)&(x2)))|((x1)&(~(x2)))", "((x0)&(~(x1)))|(x2)")
+circuit.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
 
 def print_test():

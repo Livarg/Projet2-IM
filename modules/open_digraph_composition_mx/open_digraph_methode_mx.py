@@ -13,13 +13,31 @@ from modules.matrix import *
 from modules.node import *
 
 class open_digraph_methode_mx:
+    def max_id(self):
+        '''
+        __________________________
+        Methode:
+
+        Renvoie le plus grand ID de node dont le graphe est composé
+        __________________________
+        '''
+        if len(self.nodes) == 0:
+            raise ValueError("You are looking for the max of an empty dictionnary")
+        cpt = list(self.nodes.keys())[0]
+        for node_id in self.nodes.keys():
+            if cpt < node_id:
+                cpt = node_id
+        return cpt
+    
     def new_id(self) -> int:
         '''
         __________________________
         return: renvoie une nouvelle ID disponible
         __________________________
         '''
-        return self.max_id + 1
+        if(len(self.nodes) == 0):
+            return 0
+        return self.max_id() + 1
     
     def add_edge(self, src: int, tgt: int) -> None:
         '''
@@ -64,7 +82,6 @@ class open_digraph_methode_mx:
         __________________________
         '''
         new_id = self.new_id()
-        self.max_id += 1
         new_node = node(new_id, label, {}, {})
         self.nodes[new_id] = new_node
 

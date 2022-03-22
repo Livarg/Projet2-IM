@@ -1,5 +1,6 @@
 from doctest import FAIL_FAST
 from multiprocessing.managers import ValueProxy
+from tokenize import String
 from typing import Dict, List, Tuple
 from logging import raiseExceptions
 from random import choice
@@ -178,7 +179,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
                 for _ in range(node.children[ID]) : 
                     file.write("    " + str(node.get_id()) + "->" + str(self.nodes[ID].get_id()) + ";\n")
             if verbose :
-                file.write("    " + str(node.get_id()) + "[label = " + node.get_label()  + "_" + str(node.get_id())+ "]; \n" )
+                file.write("    " + str(node.get_id()) + "[label = \"" + node.get_label()  + "\"]; \n" )
             if node.get_id() in self.get_input_ids():
                 file.write("    " + str(node.get_id()) + "[shape = Mdiamond, color = green];\n")
             if node.get_id() in self.get_output_ids():
@@ -269,22 +270,6 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         cpt = list(self.nodes.keys())[0]
         for node_id in self.nodes.keys():
             if cpt > node_id:
-                cpt = node_id
-        return cpt
-    
-    def max_id(self):
-        '''
-        __________________________
-        Methode:
-
-        Renvoie le plus grand ID de node dont le graphe est composé
-        __________________________
-        '''
-        if len(self.nodes) == 0:
-            raise ValueError("You are looking for the max of an empty dictionnary")
-        cpt = list(self.nodes.keys())[0]
-        for node_id in self.nodes.keys():
-            if cpt < node_id:
                 cpt = node_id
         return cpt
         
@@ -520,3 +505,22 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
             res.append(prev[v])
             v = prev[v]
         return res.reverse(), len(res)
+    
+    def fusion_node(self,src : node, tgt : node, name : str = '¤'):
+        if not(name == '¤'):
+            src.set_label(name)
+        for child in tgt.get_children_ids():
+            if(child == tgt.get_id()):
+                for _ in range(tgt.children[child]):
+                    self.add_edge(src.get_id(),src.get_id())
+            else :
+                for _ in range(tgt.children[child]):
+                    self.add_edge(src.get_id(), child)
+        for parent in tgt.get_parents_ids():
+            if(parent == tgt.get_id()):
+                for _ in range(tgt.parents[parent]):
+                    self.add_edge(src.get_id(),src.get_id())
+            else :
+                for _ in range(tgt.parents[parent]):
+                    self.add_edge(parent, src.get_id())
+        self.remove_node_by_id(tgt.get_id())

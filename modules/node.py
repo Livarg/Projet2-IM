@@ -220,13 +220,13 @@ class node:
     
     def indegree(self) -> int:
         sum = 0
-        for parent in self.parents.values:
+        for parent in self.parents.values():
             sum += parent
         return sum
 
     def outdegree(self) -> int:
         sum = 0
-        for child in self.children.values:
+        for child in self.children.values():
             sum += child
         return sum
 
