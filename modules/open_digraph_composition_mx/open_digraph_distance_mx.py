@@ -105,7 +105,7 @@ class open_digraph_distance_mx:
         Return:
 
         res list : une liste de tuple de node
-        renvoie res une liste de tuple de node telque le rang dans cette liste indique le nombre parents qu'à la node
+        renvoie res une liste de tuple de node telque le rang dans cette liste indique le nombre parents qu'à la node soit sa profondeur
         
         renvoie une erreure si le graph est cyclique (Si il existe un groupe de node telque toute ai un parent)
         __________________________
