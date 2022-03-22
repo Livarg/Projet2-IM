@@ -25,6 +25,11 @@ class open_digraph_distance_mx:
         __________________________
         Return:
 
+        dict node, int dist  : un dictionnaire qui associe chaque node à la distance minimale de src,
+                               peux ne pas etre complet si tgt est specifie et est atteint avant d'etre passe sur toutes les nodes
+        dict node, node prev : un dictionnaire qui associe une node a une autre voisine tel que dist[node] = dist[voisine] + 1
+                               suivre cette chaine de voisinne cree le chemin le plus court de node a src,
+                               peux ne pas etre complet si tgt est specifie et est atteint avant d'etre passe sur toutes les nodes
         __________________________
         '''
         Q = [src]
