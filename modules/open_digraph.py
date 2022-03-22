@@ -382,6 +382,13 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return newGraph
     
     def connected_components(self):   
+        '''
+        __________________________
+        Return:
+
+        Renvoie tous les graphs parallèle contenue dans un open_digraph avec l'id de 
+        __________________________
+        '''
         id = 0
         graphs = {}
         for nodeId in self.nodes:
@@ -403,6 +410,20 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
 
 
     def dijkstra(self, src : node, tgt : node = None, direction = None):
+        '''
+        __________________________
+        Parametre:
+
+        node src : node de la quelle on part 
+        node tgt : node jusqu'à la qu'elle on va. Si none on va jusqu'au bout du graph
+        direction : -1,1,none indique si l'on cherche la node tgt dans les enfants, les parents ou les deux
+        __________________________
+        Return:
+
+        dist Calcul la distance entre 2 node, c'est à dire le nombre de noeud minimal plus 1
+        prev : un dictionnaire contenant les ID des nodes sur les qu'elles on est passé
+        __________________________
+        '''
         Q = [src]
         dist = {src : 0}
         prev = {}
@@ -425,6 +446,18 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return dist, prev
             
     def shortest_path(self, u : node, v : node, direction = 1):
+        '''
+        __________________________
+        Parametre:
+
+        node u: une node quelconque
+        node v; une node quelconque
+        __________________________
+        Return:
+
+        Renvoie un dictionnaire contenant le chemin le plus entre les nodes u et v
+        __________________________
+        '''
         dist, prev = self.dijkstra(u , v, direction)
         if not(v in dist):
             raise ValueError("Il n'existe pas de chemin de u à v :(")
@@ -435,6 +468,18 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return res.reverse()
 
     def common_ancestor_distances(self, u: node, v : node):
+        '''
+        __________________________
+        Parametre:
+
+        node u: une node quelconque
+        node v; une node quelconque
+        __________________________
+        Return:
+
+        dictionnaire dist : un dictionnaire contenant pour clé l'ID d'une node parent de u et v et pour valeur le tuple de la distance a u puis v
+        __________________________
+        '''
         ancestor_u = self.get_nodes_by_ids(list(u.get_parents_ids()))
         ancestor_v = self.get_nodes_by_ids(list(v.get_parents_ids()))
         
@@ -452,6 +497,16 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
         return dist
     
     def tri_topologique(self):
+        '''
+        __________________________
+        Return:
+
+        res list : une liste de tuple de node
+        renvoie res une liste de tuple de node telque le rang dans cette liste indique le nombre parents qu'à la node
+        
+        renvoie une erreure si le graph est cyclique (Si il existe un groupe de node telque toute ai un parent)
+        __________________________
+        '''
         res = []
         copy = self.copy()
         copy.remove_nodes_by_id(copy.get_input_ids())
@@ -471,9 +526,31 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx): # for open di
                 return index
             
     def depth(self):
+        '''
+        __________________________
+        Return:
+
+        Renvoie la profondeur d'un graph c'est a dire le nombre maximal de parent que possède une node
+        __________________________
+        '''
         return len(self.tri_topologique())
     
     def longest_path(self, u: node, v: node):
+        '''
+        __________________________
+        Parametre:
+
+        node u: une node quelconque
+        node v; une node quelconque
+        __________________________
+        Return:
+
+        res list : une list de node contenant le chemin entre u et v
+        len(res) entier : le nombre de node entre qui sépare au macimum u et v
+        
+        Renvoie le chemin avec la plus grande distance possible entre deux nodes dans un graph acyclique ainsi que la distance parcourue
+        __________________________
+        '''
         tri = self.tri_topologique()
         k = 0
         while u.get_id() not in tri[k]:
