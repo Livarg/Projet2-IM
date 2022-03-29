@@ -116,7 +116,12 @@ def TP5_exo_all(opd, G):
     GRAPH = opd.parallel(G)
     print(GRAPH.connected_components())
     
-def dijkstra_test(opd, G):
-    print(G.dijkstra(i0,o0)[0])
+def dijkstra_test(G):
+    #On se rend compte que la distance entre i0 et lui même est bien 0
+    # la distance entre i0 et o0 est bien 3
+    # On voit bien dans prev que b est la node qui précède o0 dans le chemin le plus cours
+    dist, prev = G.dijkstra(i0,o0)
+    print(dist)
+    print("\n", prev)
 
-dijkstra_test(opd,G)
+dijkstra_test(G)
