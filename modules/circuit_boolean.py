@@ -1,9 +1,11 @@
 from doctest import FAIL_FAST
+from lib2to3.pytree import Node
 from multiprocessing.managers import ValueProxy
 import string
 from typing import Dict, List, Tuple
 from logging import raiseExceptions
 from random import choice
+from math import log, ceil
 import sys
 import os
 from xml.dom.minicompat import NodeList
@@ -42,10 +44,12 @@ class bool_circ(open_digraph) :
     
     def pars_parenthese(*args):
         g = bool_circ([],[],[])
+        logic = ['~','|','&', '']
         for s in args:
             g.add_node('', {}, {})
             outID = g.max_id()
             g.add_node('', {g.max_id():1}, {})
+            g.add_output_id(g.max_id())
             current_node = outID
             s2 = ''
             for char in s:
@@ -64,14 +68,53 @@ class bool_circ(open_digraph) :
                     s2 += char
         labels = {}
         for obj in g.get_nodes():
-            if(len(obj.get_parents_ids()) == 0):
+            if not(obj.get_label() in logic):
                 if obj.get_label() in labels:
                     g.fusion_node(g.get_node_by_id(labels[obj.get_label()]), obj )
                 else:
                     labels[obj.get_label()] = obj.get_id()
+        for obj in g.get_nodes():
+            if not(obj.get_label() in logic):
+                g.add_node(obj.get_label(), {}, {obj.get_id() : 1})
+                g.add_input_id(g.max_id())
         return g
-
-    
-    
-            
                 
+    def circuit_from_int(n):
+        b = bin(n)
+        len_b = len(b) - 2
+        nb_inputs = ceil(log(len_b, 2))
+        tmp = ["0" for _ in range(2**nb_inputs - len_b)]
+        binary = "".join(tmp) + b[2:]
+        print(nb_inputs)
+        print(binary)
+        list_input = []
+        list_bin_input = []
+        list_nodes = []
+        for i in range(nb_inputs):
+            node1 = node(2*i, str(i), {}, {(2*i+1) : 1})
+            node2 = node(2*i+1, "", {(2*i) : 1}, {})
+            list_input.append(node1.get_id())
+            list_bin_input.append(node2.get_id())
+            list_nodes.append(node1)
+            list_nodes.append(node2)
+        node_output = node(2*nb_inputs+2, "", {2*nb_inputs+3 : 1}, {})
+        node_bin_output = node(2*nb_inputs+3, "|", {}, {2*nb_inputs+2 : 1})
+        circ = bool_circ(list_input, [node_output.get_id()], list_nodes + [node_output, node_bin_output])
+        
+        for i, b in enumerate(binary):
+            if int(b):
+                circ.add_node("&", {}, {node_bin_output.get_id() : 1})
+                node_and = circ.max_id()
+                bin_i = bin(i)
+                tmp = ["0" for _ in range(nb_inputs - (len(bin_i) - 2))]
+                bin_i = "".join(tmp) + bin_i[2:]
+                for i2, b2 in enumerate(bin_i):
+                    if not(int(b2)):
+                        circ.add_node("~", {list_bin_input[i2] : 1}, {node_and : 1})
+                    else:
+                        circ.add_edge(list_bin_input[i2], node_and)
+        return circ
+                    
+                
+        
+        

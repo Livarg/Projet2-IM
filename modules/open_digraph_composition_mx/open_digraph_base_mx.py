@@ -109,8 +109,8 @@ class open_digraph_base_mx:
         input_id: int; the id of the new input node
         __________________________
         '''
-        if not(input_id in self.inputs):
-            raise ValueError("input ID is not in registered in inputs nodes")
+        if (input_id in self.inputs):
+            raise ValueError("input ID should not be registered in inputs nodes")
         self.inputs.append(input_id)
     
     def add_output_id(self, output_id: int) -> None:
@@ -121,7 +121,7 @@ class open_digraph_base_mx:
         output_id: int; the id of the new output node
         __________________________
         '''
-        if not(output_id in self.outputs):
-            raise ValueError("output IDis not in registered in outputs nodes ")
+        if (output_id in self.outputs):
+            raise ValueError("output IDis should not be registered in outputs nodes ")
         self.outputs.append(output_id)
     

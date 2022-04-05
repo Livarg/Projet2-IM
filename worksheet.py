@@ -16,8 +16,9 @@ n4 = node(1, 'y', {0:1}, {2:1})
 n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-circuit = bool_circ.pars_parenthese("((x0)&((x1)&(x2)))|((x1)&(~(x2)))", "((x0)&(~(x1)))|(x2)")
-G.save_as_dot_file(verbose=True)
+circuit = bool_circ.circuit_from_int(16)
+circuit_v2 = bool_circ.pars_parenthese("((x0)&(x1)&(x2))|((x1)&(~(x2)))")
+circuit.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
 
 def print_test():
@@ -123,5 +124,3 @@ def dijkstra_test(G):
     dist, prev = G.dijkstra(i0,o0)
     print(dist)
     print("\n", prev)
-
-dijkstra_test(G)
