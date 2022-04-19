@@ -28,7 +28,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx, open_digraph_d
         '''
         nodes = []
         for node in self.nodes.values():
-            nodes.append(node)
+            nodes.append(node.copy())
         _copy = open_digraph(self.inputs.copy(), self.outputs.copy(), nodes)
         return _copy
 
@@ -67,7 +67,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx, open_digraph_d
         return graph
 
     @classmethod
-    def random(self, n: int, bound: int, inputs: int = 0, outputs: int = 0, form: str = "free"):
+    def random_graph(self, n: int, bound: int, inputs: int = 0, outputs: int = 0, form: str = "free"):
         '''
         ___________________________
         Parameters:

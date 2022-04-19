@@ -16,7 +16,7 @@ n4 = node(1, 'y', {0:1}, {2:1})
 n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-circuit = bool_circ.circuit_from_int(16)
+circuit = bool_circ.random_bool_circ(8)
 circuit_v2 = bool_circ.pars_parenthese("((x0)&(x1)&(x2))|((x1)&(~(x2)))")
 circuit.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
@@ -101,12 +101,12 @@ def Exercice_12_test():
     print(opd)
 
 def TP3_ex8_test():
-    graph = open_digraph.random(4, 8, 8, 4)
+    graph = open_digraph.random_graph(4, 8, 8, 4)
     print(graph)
     print(graph.is_well_formed())
 
 def TP3_ex10_test():
-    graph = open_digraph.random(4, 4, 1, 2)
+    graph = open_digraph.random_graph(4, 4, 1, 2)
     print(repr(graph))
     print(graph.adjacency_matrix())
     

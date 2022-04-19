@@ -102,6 +102,7 @@ class bool_circ(open_digraph) :
         circ = bool_circ(list_input, [node_output.get_id()], list_nodes + [node_output, node_bin_output])
         
         for i, b in enumerate(binary):
+            print(i,b,binary)
             if int(b):
                 circ.add_node("&", {}, {node_bin_output.get_id() : 1})
                 node_and = circ.max_id()
@@ -114,7 +115,38 @@ class bool_circ(open_digraph) :
                     else:
                         circ.add_edge(list_bin_input[i2], node_and)
         return circ
-                    
+    
+    def random_bool_circ(n):
+        ope_bin = ['&','|']
+        ope_un =['~','']
+        circ = open_digraph.random_graph(n,2,0,0,"DAG")
+        top_node = []
+        bottom_node = []
+        for node in circ.get_nodes():
+            if len(node.get_parents_ids()) == 0:
+                top_node.append(node)
+            
+            if len(node.get_children_ids()) == 0:
+                bottom_node.append(node)
                 
+        for node in top_node:
+            circ.add_node('',{},{node.get_id():1})
         
-        
+        for node in bottom_node:
+            circ.add_node('',{node.get_id():1},{})
+            
+        for node in circ.get_nodes():
+            if(len(node.get_children_ids()) == 1 and len(node.get_parents_ids()) == 1):
+                node.set_label(choice(ope_un))
+            elif(len(node.get_children_ids()) == 1 and len(node.get_parents_ids()) > 1):
+                node.set_label(choice(ope_bin))
+            elif(len(node.get_children_ids()) > 1 and len(node.get_parents_ids()) == 1):
+                node.set_label('')
+            elif(len(node.get_children_ids()) > 1 and len(node.get_parents_ids()) > 1):
+                circ.add_node('',{},node.children.copy())
+                print([[node.get_id(), child_id] for child_id in node.get_children_ids()])
+                circ.remove_edges(*[[node.get_id(), child_id] for child_id in node.get_children_ids()])
+                node.set_label(choice(ope_bin))
+                circ.add_edge(node.get_id(), circ.max_id())
+                
+        return circ
