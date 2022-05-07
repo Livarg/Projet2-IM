@@ -188,58 +188,130 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx, open_digraph_d
         file.write("\n}")
         file.close()
 
-    '''def from_dot_file(file):
-    #J'ai chié ça avec trop de fatigue pour que ce soit clair et j'ai eu la flemme de le tester : 
-    #i.e. c'est sur que ca marche pas deso (mais je peux le reexpliquer si besoin ptdr)
     
-        File = open(file, "r")
-        file = File.read()
-        node_list = []
+    
+    def from_dot_file(file_path, verbose=False):
+
+        def get_next_word(line, i=0):
+            n = len(line)
+            space = [" ", "    "]
+            spe_char = ["[", "]", "{", "}", "-", ">", ";", "=", ","]
+            while i < n and line[i] in space:
+                i += 1
+            if i >= n:
+                return "", i, 1
+            if line[i] == "\n":
+                return "", i, -1
+            if line[i] in spe_char:
+                return line[i], i+1, 2
+            word = ""
+            while i < n and not(line[i] in space) and not(line[i] in spe_char):
+                word = word + line[i]
+                i += 1
+            return word, i, 0
+        
+        file = open(file_path, "r")
+        G = open_digraph.empty()
+        nodes = {}
+        node_properties = {}
+        inputs = []
+        outputs = []
         for line in file:
-            line = line.replace("    ","")
             i = 0
-            n = ""
-            while line[i] != "-":
-                n += line[i]
-                i+=1
-            n_id = int(n)
-                
-            line = line.replace("->","")
-            i-=1
-            n_child = []
-            while line[i] != ";" : 
-                n_child.append(stoi(line[i]))
-                i+=1
+            prev_word = ""
+            prev_node = ""
+            adding_properties = False
+            while True:
+                word, i, end = get_next_word(line, i)
+                if end == -1: # end of line
+                    #print("end line \\n")
+                    break
+                if end == 1:
+                    #print("error i out of range")
+                    break
+                if end == 0: # the word is composed of letters
+                    # Handling the first line
+                    if word == "digraph":
+                        word, i, end = get_next_word(line, i)
+                        if word != "{":
+                            word, i, end = get_next_word(line, i)
+                            if word != "{":
+                                raise ValueError("expected '{' after the name of the digraph")
+                    else:
+                        #print("word : " + word)
+                        if adding_properties:
+                            #print(node_properties)
+                            if prev_node == "":
+                                raise ValueError("missing node name to add properties to")
+                            property_name = word
+                            word, i, end = get_next_word(line, i)
+                            if word != "=":
+                                raise ValueError("property must get a value assigned with '='")
+                            word, i, end = get_next_word(line, i)
+                            if end != 0:
+                                raise ValueError("missing property to add")
+                            node_properties[prev_node][property_name] = word
+                        
+                        elif not word in nodes:
+                            id = G.new_id()
+                            label = word if verbose else ""
+                            G.add_node(label)
+                            nodes[word] = id
+                            node_properties[word] = {}
+                            prev_node = word
+                            #print('prev node : ', prev_node)
 
-            n_label = n
-            if "label" in line[i+1]:
-                j=0
-                line = line.replace("    ","")
-                line = line.replace("[label= ")
-                line = line.replace("]")
-                while line[j]!=" ":
-                    n_label += line[j]
-
-            n_parent = [] 
-            if len(node_list)>0 :
-                for k in range(len(node_list)) :
-                    for l in range(len(node_list[k])):
-                        if node_list[k][l] == n_id :
-                            n_parent.append(node_list[k][0])
+                        else:
+                            prev_node = word
+                            #print('prev node :', prev_node)
+                        prev_word = word
+                        
                 
-            node_list.append( node(n_id,n_label,n_parent,n_child) )
-            
-            inputs = []
-            outputs = []
-            #pour la suite on suppose qu'il y a forcement le label (pas trouvé comment faire autrement)
-            for index in range(len(node_list)) :
-                if "o" in node_list[index][1] :
-                    outputs.append(node_list[index][0])
-                    node_list.del(node_list[index])
-                elif "i" in node_list[index][1] : 
-                    inputs.append(node_list[index][0])
-                    node_list.del(node_list[index])
-            return open_digraph(inputs,outputs,node_list)'''
+                if end == 2: # word is a special character
+                    #print("special char : " + word)
+                    if word == "-":
+                        word, i, end = get_next_word(line, i)
+                        if word != ">":
+                            raise ValueError("expected '>' after '-'")
+                        word, i, end = get_next_word(line, i)
+                        if end != 0:
+                            raise ValueError("expected node name after '->'")
+                        if prev_word == "":
+                            raise ValueError("expected node name before '->'")
+                        
+                        #print("word : " + word)
+                        if not word in nodes:
+                            id = G.new_id()
+                            label = word if verbose else ""
+                            G.add_node(label)
+                            nodes[word] = id
+                            node_properties[word] = {}
+                        #print(nodes)
+                        #print(prev_node, word)
+                        G.add_edge(nodes[prev_node], nodes[word])
+                        prev_node = word
+                        
+                    
+                    elif word == "[":
+                        adding_properties = True
+                    elif word == "]":
+                        adding_properties = False
+                    prev_word = word
+        
+        #print('\nread complete !\n')
+        for node_name in nodes:
+            node_ID = nodes[node_name]
+            if verbose and 'label' in node_properties[node_name]:
+                G.get_node_by_id(node_ID).set_label(node_properties[node_name]['label'][1:-1])
+            if 'shape' in node_properties[node_name] and 'color' in node_properties[node_name]:
+                if node_properties[node_name]['shape'] == 'Mdiamond' and node_properties[node_name]['color'] == 'green':
+                    #print("new input :", node_ID)
+                    G.add_input_id(node_ID)
+                elif node_properties[node_name]['shape'] == 'Msquare' and node_properties[node_name]['color'] == 'red':
+                    #print("new output :", node_ID)
+                    G.add_output_id(node_ID)
+
+        return G
     
     def is_cyclic(self) -> bool:
         '''
