@@ -16,7 +16,7 @@ n4 = node(1, 'y', {0:1}, {2:1})
 n5 = node(2, 'z', {0:1,1:1}, {0:1})
 
 opd = open_digraph([0],[2],[n3,n4,n5])
-circuit = bool_circ.random_bool_circ(8)
+circuit = bool_circ.random_bool_circ(4,3,3)
 circuit_v2 = bool_circ.pars_parenthese("((x0)&(x1)&(x2))|((x1)&(~(x2)))")
 G.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())

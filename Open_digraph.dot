@@ -5,19 +5,19 @@ digraph G {
     0[label = "a"]; 
     1->2;
     1->2;
-    1->3;
+    1->5;
     1[label = "b"]; 
-    2->4;
+    2->6;
     2[label = "c"]; 
-    3[label = "o0"]; 
-    3[shape = Msquare, color = red];
-    4[label = "o1"]; 
-    4[shape = Msquare, color = red];
-    5->0;
-    5[label = "i0"]; 
-    5[shape = Mdiamond, color = green];
-    6->0;
-    6[label = "i1"]; 
-    6[shape = Mdiamond, color = green];
+    3->0;
+    3[label = "i0"]; 
+    3[shape = Mdiamond, color = green];
+    4->0;
+    4[label = "i1"]; 
+    4[shape = Mdiamond, color = green];
+    5[label = "o0"]; 
+    5[shape = Msquare, color = red];
+    6[label = "o1"]; 
+    6[shape = Msquare, color = red];
 
 }

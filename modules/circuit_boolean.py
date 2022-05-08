@@ -116,7 +116,9 @@ class bool_circ(open_digraph) :
                         circ.add_edge(list_bin_input[i2], node_and)
         return circ
     
-    def random_bool_circ(n):
+    def random_bool_circ(n, nb_input, nb_output):
+        if(nb_input < 1 or nb_output < 1):
+            raise ValueError("Il faut impérativement une input et une output")
         ope_bin = ['&','|']
         ope_un =['~','']
         circ = open_digraph.random_graph(n,2,0,0,"DAG")
@@ -130,11 +132,45 @@ class bool_circ(open_digraph) :
                 bottom_node.append(node)
                 
         for node in top_node:
-            circ.add_node('',{},{node.get_id():1})
+         #   circ.add_node('',{},{node.get_id():1})
+            circ.add_input_node(node.get_id())
         
         for node in bottom_node:
-            circ.add_node('',{node.get_id():1},{})
-            
+         #   circ.add_node('',{node.get_id():1},{})
+            circ.add_output_node(node.get_id())
+        
+        nodes = circ.get_node_ids()
+        """
+        for i in range(nb_input - len(circ.get_input_ids())):
+            node = choice(nodes)
+            while node in circ.get_input_ids():
+                node = choice(nodes)
+            circ.add_node('', {}, { node:1})
+            circ.add_input_node(circ.max_id())
+        
+        while nb_input < len(circ.get_input_ids()):
+            node1 = choice(circ.get_input_ids())
+            node2 = node1
+            while node2 == node1:
+                node2 = choice(circ.get_input_ids())
+            circ.add_node('', {node2 : 1}, {circ.get_node_by_id(node1).get_children_ids()[0] : 1, circ.get_node_by_id(node2).get_children_ids()[0] : 1})
+            circ.remove_node_by_id(node1)
+        """
+        for i in range(nb_output - len(circ.get_output_ids())):
+            node = choice(nodes)
+            while node in circ.get_output_ids():
+                node = choice(nodes)
+            circ.add_node('', {node : 1}, {})
+            circ.add_output_node(circ.max_id())
+        
+        while nb_output < len(circ.get_output_ids()):
+            node1 = choice(circ.get_output_ids())
+            node2 = node1
+            while node2 == node1:
+                node2 = choice(circ.get_output_ids())
+            circ.add_node('', {circ.get_node_by_id(node1).get_parent_ids()[0] : 1, circ.get_node_by_id(node2).get_parent_ids()[0] : 1}, {node2 : 1})
+            circ.remove_node_by_id(node1)
+        
         for node in circ.get_nodes():
             if(len(node.get_children_ids()) == 1 and len(node.get_parents_ids()) == 1):
                 node.set_label(choice(ope_un))
@@ -144,7 +180,7 @@ class bool_circ(open_digraph) :
                 node.set_label('')
             elif(len(node.get_children_ids()) > 1 and len(node.get_parents_ids()) > 1):
                 circ.add_node('',{},node.children.copy())
-                print([[node.get_id(), child_id] for child_id in node.get_children_ids()])
+                #print([[node.get_id(), child_id] for child_id in node.get_children_ids()])
                 circ.remove_edges(*[[node.get_id(), child_id] for child_id in node.get_children_ids()])
                 node.set_label(choice(ope_bin))
                 circ.add_edge(node.get_id(), circ.max_id())

@@ -262,7 +262,7 @@ class open_digraph_methode_mx:
         if id in self.get_input_ids():
             raise ValueError("Input node can't point to another input node")
         new_id = self.new_id()
-        self.add_node(str(new_id), {}, {id:1})
+        self.add_node('',{}, {id:1})
         self.inputs.append(new_id)
     
     def add_output_node(self, id: int) -> None:
@@ -279,5 +279,5 @@ class open_digraph_methode_mx:
         if id in self.get_output_ids():
             raise ValueError("Output node can't point to another output node")
         new_id = self.new_id()
-        self.add_node(str(new_id), {id:1}, {})
+        self.add_node('', {id:1}, {})
         self.outputs.append(new_id)

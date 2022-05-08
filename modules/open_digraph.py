@@ -59,7 +59,7 @@ class open_digraph(open_digraph_base_mx, open_digraph_methode_mx, open_digraph_d
         '''
         graph = self.empty()
         for i in range(len(matrix)):
-            graph.add_node(str(i))
+            graph.add_node('')
         for x in range(len(matrix)):
             for y in range(len(matrix)):
                 for _ in range(matrix[x][y]):
