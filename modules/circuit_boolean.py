@@ -15,8 +15,9 @@ sys.path.append(root)
 from modules.matrix import *
 from modules.node import *
 from modules.open_digraph import *
+from modules.circuit_bool_mx.circuit_boolean_eval_mx import *
 
-class bool_circ(open_digraph) :
+class bool_circ(open_digraph,circuit_boolean_eval_mx) :
     
     def __init__(self, graph) -> None:
         super().__init__(graph.get_input_ids,graph.get_output_ids,graph.get_nodes)
