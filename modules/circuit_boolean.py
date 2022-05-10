@@ -36,7 +36,7 @@ class bool_circ(open_digraph) :
         for node in self.nodes.values() :
             if node.label == "" and node.indegree() > 1:
                 return False
-            if (node.label == "&" or node.label == "|") and node.outdegree() > 1:
+            if (node.label == "&" or node.label == "|" or node.label == "^") and node.outdegree() > 1:
                 return False
             if node.label == "~" and (node.indegree() > 1 or node.outdegree() > 1):
                 return False
@@ -186,3 +186,17 @@ class bool_circ(open_digraph) :
                 circ.add_edge(node.get_id(), circ.max_id())
                 
         return circ
+    
+# Il faut faire les adder
+
+def int_to_boolCirc(self, val : int, n : int = 8):
+    bites = bin(val)[2:]
+    if len(bites) > n:
+        raise ValueError("This number is too big")
+    bites = "0" * (int(n - len(bites))) + bites
+    graph = open_digraph.empty()
+    for bit in bites:
+        num = graph.add_node(bit)
+        graph.add_output_node(num)
+    return graph
+    
