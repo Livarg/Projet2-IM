@@ -169,7 +169,7 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
             node2 = node1
             while node2 == node1:
                 node2 = choice(circ.get_output_ids())
-            circ.add_node('', {circ.get_node_by_id(node1).get_parent_ids()[0] : 1, circ.get_node_by_id(node2).get_parent_ids()[0] : 1}, {node2 : 1})
+            circ.add_node('', {circ.get_node_by_id(node1).get_parents_ids()[0] : 1, circ.get_node_by_id(node2).get_parents_ids()[0] : 1}, {node2 : 1})
             circ.remove_node_by_id(node1)
         
         for node in circ.get_nodes():
@@ -188,7 +188,111 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
                 
         return circ
     
-# Il faut faire les adder
+    # Il faut faire les adder
+    def adder(a : string, b : string, carry : string = '0') -> open_digraph:
+        m = max(len(a), len(b))
+        n = ceil(log(m, 2))
+
+        a = '0'*(n - len(a)) + a
+        b = '0'*(n - len(b)) + b
+
+        if n == 0:
+            G = bool_circ.empty()
+
+            G.add_node('a')
+            mult1 = G.max_id()
+            G.add_node('b')
+            mult2 = G.max_id()
+            G.add_node('c')
+            mult3 = G.max_id()
+            G.add_node('^', {mult1 : 1, mult2 : 1})
+            xor1 = G.max_id()
+            G.add_node('&', {mult1 : 1, mult2 : 1})
+            and1 = G.max_id()
+            G.add_node('', {xor1 : 1})
+            mult4 = G.max_id()
+            G.add_node('&', {mult4 : 1, mult3 : 1})
+            and2 = G.max_id()
+            G.add_node('|', {and1 : 1, and2 : 1})
+            or1 = G.max_id()
+            G.add_node('^', {mult4 : 1, mult3 : 1})
+            xor2 = G.max_id()
+            G.add_output_node(or1, 'c')
+            G.add_output_node(xor2, 'out')
+            G.add_input_node(mult1)
+            G.add_input_node(mult2)
+            G.add_input_node(mult3)
+
+            inputs = G.get_input_ids()
+            for i in range(len(inputs)):
+                G.get_node_by_id(inputs[i]).set_label(str(i) +' '+ (a+b+carry)[i])
+
+            outputs = G.get_output_ids()
+            for i in range(len(outputs)):
+                G.get_node_by_id(outputs[i]).set_label(str(i))
+
+            return G
+
+
+        G1 = bool_circ.adder(b[:len(b)//2], b[len(b)//2:], carry)
+        #G1.add_input_node(G1.get_node_ids()[0])
+        G2 = bool_circ.adder(a[:len(a)//2], a[len(a)//2:])
+
+        G1.iparallel(G2)
+
+        
+        c2_input = G2.get_node_by_id(G2.get_input_ids()[-1])
+        c2_in_node_id = c2_input.get_children_ids()[0]
+        G1.remove_node_by_id(c2_input.get_id())
+
+        c1_output = G1.get_node_by_id(G1.get_output_ids()[0])
+        c1_out_node_id = c1_output.get_parents_ids()[0]
+        G1.remove_node_by_id(c1_output.get_id())
+
+        G1.add_edge(c1_out_node_id, c2_in_node_id)
+
+        l = 2**(n-1)
+        inputs = G1.get_input_ids()
+        # pour n = 1 on a pour i index de inputs 
+        # G1 0-1    c 2    G2 3-4
+        # et on veux
+        # G2a 0    G1a 1    G2b 2    G1b 3    c 4
+        a1 = inputs[:l]
+        b1 = inputs[l:2*l]
+        c = inputs[2*l:2*l+1]
+        a2 = inputs[2*l+1:3*l+1]
+        b2 = inputs[3*l+1:]
+        inputs = a2 + a1 + b2 + b1 + c
+        G1.set_input_ids(inputs)
+
+        outputs = G1.get_output_ids()
+        # pour n = 1 on a pour les outputs
+        # G1o 0    c 1    G2o 2
+        # et on veux
+        # c    G2o 1    G1o 2
+        o1 = outputs[:l]
+        c = outputs[l:l+1]
+        o2 = outputs[l+1:]
+        print(outputs)
+        print(o1,c,o2)
+        outputs = c + o2 + o1
+        G1.set_output_ids(outputs)
+
+        # pour debug ou voir dans quel ordre lire les nombres binaires
+        for i in range(len(inputs)):
+            G1.get_node_by_id(inputs[i]).set_label(str(i) +' '+ (a+b+carry)[i])
+        
+        for i in range(len(outputs)):
+            G1.get_node_by_id(outputs[i]).set_label(str(i))
+
+        return G1
+
+    def half_adder(a : string, b : string) -> open_digraph:
+        G = bool_circ.adder(a, b)
+        carry = G.get_node_by_id(G.get_input_ids()[-1])
+        carry.set_label("0")
+        G.set_input_ids(G.get_input_ids()[:-1])
+        return G
 
 def int_to_boolCirc(self, val : int, n : int = 8):
     bites = bin(val)[2:]
