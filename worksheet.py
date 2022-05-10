@@ -21,7 +21,7 @@ circuit_v2 = bool_circ.pars_parenthese("((x0)&(x1)&(x2))|((x1)&(~(x2)))")
 #G.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
 
-bool_circ.half_adder('0101', '1110').save_as_dot_file(verbose=True)
+bool_circ.adder('0101', '1110').save_as_dot_file(verbose=True)
 
 def print_test():
     print(n0)

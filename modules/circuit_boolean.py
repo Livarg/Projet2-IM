@@ -199,11 +199,11 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
         if n == 0:
             G = bool_circ.empty()
 
-            G.add_node('a')
+            G.add_node('')
             mult1 = G.max_id()
-            G.add_node('b')
+            G.add_node('')
             mult2 = G.max_id()
-            G.add_node('c')
+            G.add_node('')
             mult3 = G.max_id()
             G.add_node('^', {mult1 : 1, mult2 : 1})
             xor1 = G.max_id()
@@ -225,7 +225,7 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
 
             inputs = G.get_input_ids()
             for i in range(len(inputs)):
-                G.get_node_by_id(inputs[i]).set_label(str(i) +' '+ (a+b+carry)[i])
+                G.get_node_by_id(inputs[i]).set_label((a+b+carry)[i])
 
             outputs = G.get_output_ids()
             for i in range(len(outputs)):
@@ -273,14 +273,14 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
         o1 = outputs[:l]
         c = outputs[l:l+1]
         o2 = outputs[l+1:]
-        print(outputs)
-        print(o1,c,o2)
+        #print(outputs)
+        #print(o1,c,o2)
         outputs = c + o2 + o1
         G1.set_output_ids(outputs)
 
         # pour debug ou voir dans quel ordre lire les nombres binaires
         for i in range(len(inputs)):
-            G1.get_node_by_id(inputs[i]).set_label(str(i) +' '+ (a+b+carry)[i])
+            G1.get_node_by_id(inputs[i]).set_label((a+b+carry)[i])
         
         for i in range(len(outputs)):
             G1.get_node_by_id(outputs[i]).set_label(str(i))
