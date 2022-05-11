@@ -26,16 +26,17 @@ class circuit_boolean_eval_mx:
         
     def not_gate(self, ID : int):
         node = self.get_node_by_id(ID)
-        if(self.get_node_by_id(node.get_children_ids()[0]).get_label() != "~"):
+        if(node.get_label() != "~"):
             raise ValueError("invalid pattern")
-        child = self.get_node_by_id(node.get_children_ids()[0])
-        if(node.get_label() == "0"):
-            child.set_label("1")
-        elif(node.get_label() == "1"):
-            child.set_label("0")
+        parent = self.get_node_by_id(node.get_parents_ids()[0])
+        if(parent.get_label() == "0"):
+            node.set_label("1")
+        elif(parent.get_label() == "1"):
+            node.set_label("0")
         else:
             raise ValueError("invalid pattern")
-        self.remove_nodes_by_id(ID)
+        #self.remove_nodes_by_id(self.get_node_by_id(node.get_parents_ids()[0]))
+        self.remove_nodes_by_id(node.get_parents_ids())
         
     def and_gate(self, Id: int):
         node = self.get_node_by_id(Id)
@@ -111,24 +112,24 @@ class circuit_boolean_eval_mx:
             for ID in self.get_node_ids():
                 node = self.get_node_by_id(ID)
                 if node != None and len(node.get_parents_ids()) == 0:
-                    self.remove_node_by_id(ID)
+                    self.remove_node_by_id(id)
                 elif((node.get_label() != "0" and node.get_label() != "1") or node.get_children_ids()[0] not in self.get_output_ids()):
-                        node = self.get_node_by_id(ID)
-                        if node.get_label() == '&' or node.get_label() == '|' or node.get_label() == '^':
-                            self.neutre_gate(ID)
-                        else:
-                            children = node.get_children_ids()
-                            if len(children) != 1:
-                                raise ValueError("too many children ;(")
-                            label = self.get_node_by_id(children[0]).get_label()
-                            if label == '':
-                                self.copy_gate(ID)
-                            elif label == '&':
-                                self.and_gate(ID)
-                            elif label == '|':
-                                self.or_gate(ID)
-                            elif label == '~':
-                                self.not_gate(ID)
-                            elif label == '^':
-                                self.xor_gate(ID)
-                        run = True
+                    if node.get_label() == '&' or node.get_label() == '|' or node.get_label() == '^':
+                        self.neutre_gate(ID)
+                    else:
+                        children = node.get_children_ids()
+                        print(children, len(children))
+                        if len(children) > 1:
+                            raise ValueError("too many children ;(")
+                        label = self.get_node_by_id(ID).get_label()
+                        if label == '':
+                            self.copy_gate(ID)
+                        elif label == '&':
+                            self.and_gate(ID)
+                        elif label == '|':
+                            self.or_gate(ID)
+                        elif label == '~':
+                            self.not_gate(ID)
+                        elif label == '^':
+                            self.xor_gate(ID)
+                    run = True
