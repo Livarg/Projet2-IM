@@ -294,7 +294,7 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
         G.set_input_ids(G.get_input_ids()[:-1])
         return G
 
-def int_to_boolCirc(self, val : int, n : int = 8):
+def int_to_boolCirc(val : int, n : int = 8):
     bites = bin(val)[2:]
     if len(bites) > n:
         raise ValueError("This number is too big")

@@ -1,3 +1,4 @@
+from sre_constants import ASSERT
 from modules.open_digraph import *
 from modules.circuit_boolean import *
 import inspect
@@ -126,3 +127,10 @@ def dijkstra_test(G):
     dist, prev = G.dijkstra(i0,o0)
     print(dist)
     print("\n", prev)
+    
+def TP11_exo_5():
+    circ = int_to_boolCirc(1)
+    circ.evaluate()
+    print(circ)
+    
+TP11_exo_5()

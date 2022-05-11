@@ -119,7 +119,7 @@ class circuit_boolean_eval_mx:
                         else:
                             children = node.get_children_ids()
                             if len(children) != 1:
-                                raise ValueError("more than 1 child")
+                                raise ValueError("too many children ;(")
                             label = self.get_node_by_id(children[0]).get_label()
                             if label == '':
                                 self.copy_gate(id)
