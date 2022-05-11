@@ -14,11 +14,11 @@ class circuit_boolean_eval_mx:
     def copy_gate(self, Id : int):
         node = self.get_node_by_id(Id)
         if node.get_label() != "1" and node.get_label() != "0":
-            raise ValueError("invalid pattern")
+            raise ValueError("invalid pattern label != 0/1")
         idChild = node.get_children_ids()[0]
         child = self.get_node_by_id(idChild)
         if child.get_label() != '':
-            raise ValueError("invalid pattern")
+            raise ValueError("invalid pattern label != ''")
         for c in child.get_children_ids():
             n = self.add_node(node.get_label())
             self.add_edge(n, c)
@@ -110,23 +110,25 @@ class circuit_boolean_eval_mx:
             run = False
             for ID in self.get_node_ids():
                 node = self.get_node_by_id(ID)
-                if((node.get_label() != "0" and node.get_label() != "1") or node.get_children_ids()[0] not in self.get_output_ids()):
-                        node = self.get_node_by_id(id)
+                if node != None and len(node.get_parents_ids()) == 0:
+                    self.remove_node_by_id(ID)
+                elif((node.get_label() != "0" and node.get_label() != "1") or node.get_children_ids()[0] not in self.get_output_ids()):
+                        node = self.get_node_by_id(ID)
                         if node.get_label() == '&' or node.get_label() == '|' or node.get_label() == '^':
-                            self.neutre_gate(id)
+                            self.neutre_gate(ID)
                         else:
                             children = node.get_children_ids()
                             if len(children) != 1:
                                 raise ValueError("too many children ;(")
                             label = self.get_node_by_id(children[0]).get_label()
                             if label == '':
-                                self.copy_gate(id)
+                                self.copy_gate(ID)
                             elif label == '&':
-                                self.and_gate(id)
+                                self.and_gate(ID)
                             elif label == '|':
-                                self.or_gate(id)
+                                self.or_gate(ID)
                             elif label == '~':
-                                self.not_gate(id)
+                                self.not_gate(ID)
                             elif label == '^':
-                                self.xor_gate(id)
+                                self.xor_gate(ID)
                         run = True

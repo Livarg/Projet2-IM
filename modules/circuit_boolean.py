@@ -45,7 +45,7 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
     
     def pars_parenthese(*args):
         g = bool_circ([],[],[])
-        logic = ['~','|','&', '']
+        logic = ['~','|','&', '', '^']
         for s in args:
             g.add_node('', {}, {})
             outID = g.max_id()
@@ -294,14 +294,15 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
         G.set_input_ids(G.get_input_ids()[:-1])
         return G
 
-def int_to_boolCirc(val : int, n : int = 8):
-    bites = bin(val)[2:]
-    if len(bites) > n:
-        raise ValueError("This number is too big")
-    bites = "0" * (int(n - len(bites))) + bites
-    graph = open_digraph.empty()
-    for bit in bites:
-        num = graph.add_node(bit)
-        graph.add_output_node(num)
-    return graph
+    def int_to_boolCirc(val : int, n : int = 8):
+        bites = bin(val)[2:]
+        if len(bites) > n:
+            raise ValueError("This number is too big")
+        bites = "0" * (int(n - len(bites))) + bites
+        graph = open_digraph.empty()
+        for bit in bites:
+            num = graph.add_node(bit)
+            graph.add_output_node(num)
+        return graph
+
     

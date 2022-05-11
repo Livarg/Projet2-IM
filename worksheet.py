@@ -22,7 +22,7 @@ circuit_v2 = bool_circ.pars_parenthese("((x0)&(x1)&(x2))|((x1)&(~(x2)))")
 #G.save_as_dot_file(verbose=True)
 #print(opd.is_cyclic())
 
-bool_circ.adder('0101', '1110').save_as_dot_file(verbose=True)
+#bool_circ.adder('0101', '1110').save_as_dot_file(verbose=True)
 
 def print_test():
     print(n0)
@@ -129,8 +129,10 @@ def dijkstra_test(G):
     print("\n", prev)
     
 def TP11_exo_5():
-    circ = int_to_boolCirc(1)
+    
+    circ = bool_circ.pars_parenthese("~(0)~")
     circ.evaluate()
+    circ.save_as_dot_file(verbose=True)
     print(circ)
     
 TP11_exo_5()
