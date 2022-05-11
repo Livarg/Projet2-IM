@@ -110,9 +110,7 @@ class circuit_boolean_eval_mx:
             run = False
             for ID in self.get_node_ids():
                 node = self.get_node_by_id(ID)
-                if node != None and len(node.get_parent_ids()) == 0:
-                    self.remove_node_by_id(id)
-                elif((node.get_label() != "0" and node.get_label() != "1") or node.get_children_ids()[0] not in self.get_output_ids()):
+                if((node.get_label() != "0" and node.get_label() != "1") or node.get_children_ids()[0] not in self.get_output_ids()):
                         node = self.get_node_by_id(id)
                         if node.get_label() == '&' or node.get_label() == '|' or node.get_label() == '^':
                             self.neutre_gate(id)
