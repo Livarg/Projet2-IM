@@ -131,8 +131,6 @@ def dijkstra_test(G):
 def TP11_exo_5():
     
     circ = bool_circ.pars_parenthese("~(0)")
-    print(circ)
-    circ.save_as_dot_file(verbose=True)
     circ.evaluate()
     circ.save_as_dot_file(verbose=True)
     print(circ)

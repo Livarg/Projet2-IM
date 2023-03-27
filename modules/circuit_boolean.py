@@ -304,5 +304,31 @@ class bool_circ(open_digraph,circuit_boolean_eval_mx) :
             num = graph.add_node(bit)
             graph.add_output_node(num)
         return graph
+    
+    def evaluate(self):
+        print(self)
+        run = True
+        while run:
+            run = False
+            for ID in self.get_node_ids():
+                node = self.get_node_by_id(ID)
+                if(node.get_id() not in self.get_output_ids()):
+                    if len(node.get_children_ids()) == 0 and (node.get_label() == '&' or node.get_label() == '|' or node.get_label() == '^'):
+                        self.neutre_gate(ID)
+                    else:
+                        label = self.get_node_by_id(ID).get_label()
+                        if label == '':
+                            self.copy_gate(ID)
+                        if len(node.get_children_ids()) > 1:
+                            raise ValueError("too many children ;(")
+                        if label == '&':
+                            self.and_gate(ID)
+                        elif label == '|':
+                            self.or_gate(ID)
+                        elif label == '~':
+                            self.not_gate(ID)
+                        elif label == '^':
+                            self.xor_gate(ID)
+                    run = True
 
     
