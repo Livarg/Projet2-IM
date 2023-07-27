@@ -3,8 +3,9 @@ node {
     checkout scm
   }
   stage('SonarQube Analysis') {
+    def SonarHome= sh"$(which sonnar-scanner)"
     withSonarQubeEnv() {
-      sh "/home/catB/wg275589/software/sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner"
+      sh "${SonarHome}"
     }
   }
 }
