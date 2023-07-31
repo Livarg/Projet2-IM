@@ -1,15 +1,10 @@
-environment {
-  SONARSERVER = 'sonarserver'
-  SONARSCANNER= 'sonarscanner'
-}
-
 node {
   stage('SCM') {
     checkout scm
   }
   stage('SonarQube Analysis') {
-    def scannerHome = tool "${SONARSCANNER}";
-    withSonarQubeEnv("${SONARSERVER}") {
+    def scannerHome = tool "sonarscanner";
+    withSonarQubeEnv("sonarserver") {
       sh "${scannerHome}/bin/sonar-scanner"
     }
   }
