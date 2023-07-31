@@ -1,4 +1,4 @@
-environnement {
+environment {
   SONARSERVER = 'sonarserver'
   SONARSCANNER= 'sonarscanner'
 }
