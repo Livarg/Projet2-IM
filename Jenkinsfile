@@ -4,8 +4,8 @@ node {
   }
   stage('SonarQube Analysis') {
     withSonarQubeEnv("sonarserver") {
-      sh '''SONAR=$(which sonar-scanner)'''
-      sh '''eval $SONAR'''
+      sh '''SONAR=$(which sonar-scanner)
+            eval $SONAR'''
     }
   }
 }
