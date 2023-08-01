@@ -3,9 +3,9 @@ node {
     checkout scm
   }
   stage('SonarQube Analysis') {
-    def scanner = sh 'which sonar-scanner';
     withSonarQubeEnv("sonarserver") {
-      sh "${scanner}"
+      sh "SONAR=$(which sonar-scanner)"
+      sh "eval $SONAR"
     }
   }
 }
